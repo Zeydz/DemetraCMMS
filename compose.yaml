@@ -1,0 +1,7 @@
+﻿services:
+  dotnet-projektuppgift:
+    image: dotnet-projektuppgift
+    build:
+      context: .
+      dockerfile: Dockerfile
+
