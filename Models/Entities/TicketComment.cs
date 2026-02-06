@@ -4,8 +4,13 @@ namespace dotnet_projektuppgift.Models.Entities;
 
 public class TicketComment
 {
+    public int Id { get; set; }
+    
     [Required]
-    public string UserId { get; set; } =  string.Empty;
+    public int TicketId { get; set; }
+    
+    [Required]
+    public string UserId { get; set; } = string.Empty;
     
     [Required]
     [MaxLength(200)]
