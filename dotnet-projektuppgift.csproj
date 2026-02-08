@@ -8,11 +8,18 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.2">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
     </ItemGroup>
 
     <!-- Kör Tailwind INNAN ASP.NET letar efter statiska filer -->
@@ -23,9 +30,7 @@
 
     <!-- Registrera output.css ENDAST om den finns -->
     <ItemGroup>
-        <Content Include="wwwroot/css/output.css"
-                 Condition="Exists('wwwroot/css/output.css')"
-                 CopyToPublishDirectory="Always" />
+        <Content Include="wwwroot/css/output.css" Condition="Exists('wwwroot/css/output.css')" CopyToPublishDirectory="Always" />
     </ItemGroup>
     <ItemGroup>
       <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css" />
@@ -73,9 +78,6 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\LICENSE" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Data\" />
     </ItemGroup>
 
 </Project>
