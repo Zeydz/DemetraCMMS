@@ -6,3 +6,4 @@ riderModule.iml
 /node_modules
 .env
 .idea/
+Dbseeder.cs

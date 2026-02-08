@@ -33,11 +33,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
-
-
-
-
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
