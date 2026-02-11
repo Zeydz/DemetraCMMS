@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Maintenance System</title>
+    
+    <!-- Tailwind CSS CDN -->
+    @*<script src="https://cdn.tailwindcss.com"></script>*@
+    <link rel="stylesheet" href="css/styles.css"/>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Gruppo&family=Saira:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="bg-gray-50 min-h-screen">
+    
+    @* Navigation bar (public) *@
+    <nav class="bg-[#041f41] shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                
+                @* Logo & Brand on the left side*@
+                <div class="flex items-center">
+                    <a asp-controller="Home"
+                       asp-action="Index"
+                       class="flex items-center gap-2 font-bold text-2xl tracking-tight group">
+
+                        <span style="font-family: var(--font-brand3)">
+                            <span class="text-[#75c6a4]">Demetra</span>
+                        </span>
+
+                    </a>
+                </div>
+                
+                @* Right side in the navigation bar *@
+                <div class="flex items-center space-x-4">
+                    <a asp-controller="Public" asp-action="CheckStatus" 
+                       class="text-[#75c6a4] hover:text-primary px-4 py-2 rounded-md text-sm font-medium transition">
+                        Check Ticket Status
+                    </a>
+                    <a asp-controller="Account" asp-action="Login" 
+                       class="bg-[#75c6a4] text-black px-6 py-2 rounded-md text-sm font-medium hover:[#00ae82] transition shadow-md">
+                        Login
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </nav>
+    
+    @* Main content which renders from Views *@
+    <main>
+        @RenderBody()
+    </main>
+    
+    @* Footer *@
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm">&copy; 2026 Demetra</p>
+                    <p class="text-xs text-gray-400 mt-1">Mittuniversitetet - Web Development Project</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
