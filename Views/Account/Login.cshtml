@@ -1,0 +1,205 @@
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+<style>
+    body {
+        font-family: 'Exo 2', sans-serif;
+    }
+
+    .mono {
+        font-family: 'Saira', sans-serif;
+    }
+
+    .gruppo {
+        font-family: 'Gruppo', sans-serif;
+    }
+</style>
+
+<div class="min-h-screen bg-gray-50 flex items-center justify-center py-16 px-4 ">
+
+    <div class="w-full max-w-md">
+
+        @* Card *@
+        <div class="bg-white border-2 border-gray-200">
+
+            @* Tab switcher, made with Javascript (~/wwwroot/js/auth-toggle.js*@
+            <div class="flex border-b-2 border-gray-200">
+                <button onclick="showTab('login')" id="tab-login"
+                        class="border-b-2 tracking-[0.15em] flex-1 py-4 text-xs font-bold uppercase text-[#041f41] bg-white transition mono">
+                    Login
+                </button>
+                <button onclick="showTab('register')" id="tab-register"
+                        class="mono tracking-[0.15em] border-b-2 flex-1 py-4 text-xs font-bold uppercase text-gray-400 hover:text-gray-600 bg-white transition">
+                    Sign Up
+                </button>
+            </div>
+
+            @* LOGIN FORM *@
+            <div id="panel-login" class="p-8">
+
+                <div class="flex items-center gap-2 mb-6">
+                    <span class="w-1.5 h-1.5 bg-[#02f1b4] inline-block"></span>
+                    <span class="mono text-[10px] tracking-[0.25em] text-[#02f1b4] uppercase font-bold">
+                        Admin / Technician access
+                    </span>
+                </div>
+
+                <h2 class="text-3xl font-black text-[#041f41] mb-8 leading-tight">
+                    Welcome back
+                </h2>
+
+                <form method="post" asp-controller="Account" asp-action="Login" class="space-y-5">
+
+                    <div>
+                        <label
+                            class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                            Email Address
+                        </label>
+                        <input type="email" name="Email" required
+                               class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium"
+                               onfocus="this.style.borderColor='#02f1b4';this.style.background='#fff'"
+                               onblur="this.style.borderColor='#e5e7eb';this.style.background='#f9fafb'"
+                               placeholder="admin@demetra.local">
+                    </div>
+
+                    <div>
+                        <label
+                            class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                            Password
+                        </label>
+                        <input type="password" name="Password" required
+                               class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium"
+                               onfocus="this.style.borderColor='#02f1b4';this.style.background='#fff'"
+                               onblur="this.style.borderColor='#e5e7eb';this.style.background='#f9fafb'"
+                               placeholder="••••••••">
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" name="RememberMe" class="w-4 h-4 accent-[#041f41]">
+                            <span class="text-sm text-gray-600">Remember me</span>
+                        </label>
+                        <a href="#" style="font-family: 'Saira', sans-serif;"
+                           class="text-[10px] tracking-widest uppercase text-gray-400 hover:text-[#041f41] transition">
+                            Forgot password?
+                        </a>
+                    </div>
+
+                    <button type="submit"
+                            style="font-family: 'Saira', sans-serif; letter-spacing: 0.15em;"
+                            class="w-full bg-[#041f41] text-[#02f1b4] py-4 text-xs font-black uppercase
+                                   border-2 border-[#041f41] hover:bg-[#02f1b4] hover:text-[#041f41] transition">
+                        Sign In →
+                    </button>
+
+                </form>
+
+                @* DEMO CREDENTIALS *@
+                <div class="mt-6 border-2 border-dashed border-gray-200 p-4">
+                    <p
+                        class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                        Demo Credentials
+                    </p>
+                    <p class="text-xs text-gray-600">
+                        <span class="font-semibold">Email:</span> admin@maintenance.local
+                    </p>
+                    <p class="text-xs text-gray-600 mt-1">
+                        <span class="font-semibold">Password:</span> Admin123!
+                    </p>
+                </div>
+
+            </div>
+
+            @* REGISTER/SIGNUP FORM*@
+            <div id="panel-register" class="p-8 hidden">
+
+                <div class="flex items-center gap-2 mb-6">
+                    <span class="w-1.5 h-1.5 bg-[#02f1b4] inline-block"></span>
+                    <span
+                        class="mono text-[10px] tracking-[0.25em] text-[#02f1b4] uppercase font-bold">
+                        New Account
+                    </span>
+                </div>
+
+                <h2 class="text-3xl font-black text-[#041f41] mb-8 leading-tight">
+                    Create account
+                </h2>
+
+                <form method="post" asp-controller="Account" asp-action="Register" class="space-y-5">
+
+                    <div>
+                        <label
+                            class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                            Full Name
+                        </label>
+                        <input type="text" name="Name" required
+                               class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium"
+                               onfocus="this.style.borderColor='#02f1b4';this.style.background='#fff'"
+                               onblur="this.style.borderColor='#e5e7eb';this.style.background='#f9fafb'"
+                               placeholder="John Doe">
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                            Email Address
+                        </label>
+                        <input type="email" name="Email" required
+                               class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium"
+                               onfocus="this.style.borderColor='#02f1b4';this.style.background='#fff'"
+                               onblur="this.style.borderColor='#e5e7eb';this.style.background='#f9fafb'"
+                               placeholder="john@example.com">
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                            Password
+                        </label>
+                        <input type="password" name="Password" required
+                               class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium"
+                               onfocus="this.style.borderColor='#02f1b4';this.style.background='#fff'"
+                               onblur="this.style.borderColor='#e5e7eb';this.style.background='#f9fafb'"
+                               placeholder="••••••••">
+                        <p class="text-xs text-gray-400 mt-1">Minimum 6 characters</p>
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                            Confirm Password
+                        </label>
+                        <input type="password" name="ConfirmPassword" required
+                               class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium"
+                               onfocus="this.style.borderColor='#02f1b4';this.style.background='#fff'"
+                               onblur="this.style.borderColor='#e5e7eb';this.style.background='#f9fafb'"
+                               placeholder="••••••••">
+                    </div>
+
+                    <button type="submit"
+                            class="w-full tracking -[0.15em] bg-[#041f41] text-[#02f1b4] py-4 text-xs font-black uppercase
+                                   border-2 border-[#041f41] hover:bg-[#02f1b4] hover:text-[#041f41] transition">
+                        Create Account →
+                    </button>
+
+                </form>
+            </div>
+
+        </div>
+
+        @* Back to home button *@
+        <div class="text-center mt-6">
+            <a asp-controller="Home" asp-action="Index"
+               class="text-[10px] tracking-widest uppercase text-gray-400 hover:text-[#041f41] transition">
+                ← Back to Home
+            </a>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/auth-toggle.js"></script>
+}
