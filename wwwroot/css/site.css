@@ -1,1 +1,6 @@
 @import "tailwindcss";
+:root {
+    --font-brand: 'Saira', system-ui, sans-serif;
+    --font-brand2: 'Exo 2', system-ui, sans-serif;
+    --font-brand3: 'Gruppo', system-ui, sans-serif;
+}
