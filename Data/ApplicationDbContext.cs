@@ -26,6 +26,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<TicketComment> TicketComments { get; set; }
     public DbSet<MaintenanceSchedule> MaintenanceSchedules { get; set; }
 
+    /* FLUENT API */
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
