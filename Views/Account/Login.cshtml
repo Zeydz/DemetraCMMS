@@ -17,14 +17,14 @@
     }
 </style>
 
-<div class="min-h-screen bg-gray-50 flex items-center justify-center py-16 px-4 ">
+<div class="min-h-screen bg-gray-50 flex items-center justify-center py-16 px-4">
 
     <div class="w-full max-w-md">
 
         @* Card *@
         <div class="bg-white border-2 border-gray-200">
 
-            @* Tab switcher, made with Javascript (~/wwwroot/js/auth-toggle.js*@
+            @* Tab switcher *@
             <div class="flex border-b-2 border-gray-200">
                 <button onclick="showTab('login')" id="tab-login"
                         class="border-b-2 tracking-[0.15em] flex-1 py-4 text-xs font-bold uppercase text-[#041f41] bg-white transition mono">
@@ -36,7 +36,7 @@
                 </button>
             </div>
 
-            @* LOGIN FORM *@
+            @* Login form *@
             <div id="panel-login" class="p-8">
 
                 <div class="flex items-center gap-2 mb-6">
@@ -50,13 +50,30 @@
                     Welcome back
                 </h2>
 
+                @* Error messages, prevents "fake" errors on Register tab. Checks what action it is*@                                
+                @if (ViewData.ModelState.ErrorCount > 0 && ViewContext.RouteData.Values["action"]?.ToString() == "Login")
+                {
+                    <div class="mb-5 bg-red-50 border-2 border-red-200 p-4">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div class="flex-1">
+                                <p class="text-sm font-bold text-red-800 mb-1">Unable to log in</p>
+                                <div asp-validation-summary="All" class="text-xs text-red-700"></div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
                 <form method="post" asp-controller="Account" asp-action="Login" class="space-y-5">
 
                     <div>
-                        <label
-                            class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                        @* Email*@
+                        <label class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
                             Email Address
                         </label>
+
                         <input type="email" name="Email" required
                                class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium"
                                onfocus="this.style.borderColor='#02f1b4';this.style.background='#fff'"
@@ -65,10 +82,11 @@
                     </div>
 
                     <div>
-                        <label
-                            class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                        @* Password *@
+                        <label class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
                             Password
                         </label>
+
                         <input type="password" name="Password" required
                                class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium"
                                onfocus="this.style.borderColor='#02f1b4';this.style.background='#fff'"
@@ -76,30 +94,29 @@
                                placeholder="••••••••">
                     </div>
 
+                    @* Remember Me*@
                     <div class="flex items-center justify-between">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" name="RememberMe" class="w-4 h-4 accent-[#041f41]">
+                            <input type="checkbox" name="RememberMe" value="true" class="w-4 h-4 accent-[#041f41]">
                             <span class="text-sm text-gray-600">Remember me</span>
                         </label>
-                        <a href="#" style="font-family: 'Saira', sans-serif;"
-                           class="text-[10px] tracking-widest uppercase text-gray-400 hover:text-[#041f41] transition">
+                        <a href="#" class="mono text-[10px] tracking-widest uppercase text-gray-400 hover:text-[#041f41] transition">
                             Forgot password?
                         </a>
                     </div>
 
+                    @* Submit button*@
                     <button type="submit"
-                            style="font-family: 'Saira', sans-serif; letter-spacing: 0.15em;"
-                            class="w-full bg-[#041f41] text-[#02f1b4] py-4 text-xs font-black uppercase
+                            class="mono tracking-[0.15em] w-full bg-[#041f41] text-[#02f1b4] py-4 text-xs font-black uppercase
                                    border-2 border-[#041f41] hover:bg-[#02f1b4] hover:text-[#041f41] transition">
                         Sign In →
                     </button>
 
                 </form>
 
-                @* DEMO CREDENTIALS *@
+                @*$1$ Demo Credentials #1#
                 <div class="mt-6 border-2 border-dashed border-gray-200 p-4">
-                    <p
-                        class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                    <p class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
                         Demo Credentials
                     </p>
                     <p class="text-xs text-gray-600">
@@ -108,17 +125,16 @@
                     <p class="text-xs text-gray-600 mt-1">
                         <span class="font-semibold">Password:</span> Admin123!
                     </p>
-                </div>
+                </div>*@
 
             </div>
 
-            @* REGISTER/SIGNUP FORM*@
+            @* Register form *@
             <div id="panel-register" class="p-8 hidden">
 
                 <div class="flex items-center gap-2 mb-6">
                     <span class="w-1.5 h-1.5 bg-[#02f1b4] inline-block"></span>
-                    <span
-                        class="mono text-[10px] tracking-[0.25em] text-[#02f1b4] uppercase font-bold">
+                    <span class="mono text-[10px] tracking-[0.25em] text-[#02f1b4] uppercase font-bold">
                         New Account
                     </span>
                 </div>
@@ -127,11 +143,27 @@
                     Create account
                 </h2>
 
+                @* Error messages, prevents "fake" errors on Login tab*@                                
+                @if (ViewData.ModelState.ErrorCount > 0 && ViewContext.RouteData.Values["action"]?.ToString() == "Register")
+                {
+                    <div class="mb-5 bg-red-50 border-2 border-red-200 p-4">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div class="flex-1">
+                                <p class="text-sm font-bold text-red-800 mb-1">Unable to create account</p>
+                                <div asp-validation-summary="All" class="text-xs text-red-700"></div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
                 <form method="post" asp-controller="Account" asp-action="Register" class="space-y-5">
 
                     <div>
-                        <label
-                            class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                        @* Full name *@
+                        <label class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
                             Full Name
                         </label>
                         <input type="text" name="Name" required
@@ -142,8 +174,8 @@
                     </div>
 
                     <div>
-                        <label
-                            class="block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                        @* Email address*@
+                        <label class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
                             Email Address
                         </label>
                         <input type="email" name="Email" required
@@ -154,8 +186,8 @@
                     </div>
 
                     <div>
-                        <label
-                            class="block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                        @* Regular password*@
+                        <label class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
                             Password
                         </label>
                         <input type="password" name="Password" required
@@ -167,8 +199,8 @@
                     </div>
 
                     <div>
-                        <label
-                            class="block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                        @*Confirm password*@
+                        <label class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
                             Confirm Password
                         </label>
                         <input type="password" name="ConfirmPassword" required
@@ -177,9 +209,9 @@
                                onblur="this.style.borderColor='#e5e7eb';this.style.background='#f9fafb'"
                                placeholder="••••••••">
                     </div>
-
+                    @* Submit button*@
                     <button type="submit"
-                            class="w-full tracking -[0.15em] bg-[#041f41] text-[#02f1b4] py-4 text-xs font-black uppercase
+                            class="mono tracking-[0.15em] w-full bg-[#041f41] text-[#02f1b4] py-4 text-xs font-black uppercase
                                    border-2 border-[#041f41] hover:bg-[#02f1b4] hover:text-[#041f41] transition">
                         Create Account →
                     </button>
@@ -189,10 +221,10 @@
 
         </div>
 
-        @* Back to home button *@
+        @* Back to home *@
         <div class="text-center mt-6">
             <a asp-controller="Home" asp-action="Index"
-               class="text-[10px] tracking-widest uppercase text-gray-400 hover:text-[#041f41] transition">
+               class="mono text-[10px] tracking-widest uppercase text-gray-400 hover:text-[#041f41] transition">
                 ← Back to Home
             </a>
         </div>
@@ -202,4 +234,5 @@
 
 @section Scripts {
     <script src="~/js/auth-toggle.js"></script>
+    <partial name="_ValidationScriptsPartial" />
 }
