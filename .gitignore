@@ -7,5 +7,10 @@ riderModule.iml
 .env
 .idea/
 Dbseeder.cs
-maintenance.db-shm
-maintenance.db-wal
+# Database files
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+maintenance.db
