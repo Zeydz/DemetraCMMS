@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +61,29 @@ public class AccountController : Controller
 
         if (result.Succeeded)
         {
+            
+            var user = await _userManager.FindByNameAsync(model.Email);
+
+            /* Add FullName as a claim, since ASP.NET doesn't know about it*/
+            if (user != null && !string.IsNullOrEmpty(user.FullName))
+            {
+                var existingClaim = (await _userManager.GetClaimsAsync(user)).FirstOrDefault(claim => claim.Type == "FullName");
+
+                if (existingClaim == null)
+                {
+                    await _userManager.AddClaimAsync(user, new Claim("FullName", user.FullName));
+
+                }
+                else if (existingClaim.Value != user.FullName)
+                {
+                    /* Update if changed */
+                    await _userManager.ReplaceClaimAsync(user, existingClaim, new Claim("FullName", user.FullName));
+                }
+                /* Refresh the sign-in cookie to update*/
+                await _signInManager.RefreshSignInAsync(user);
+            }
+            
+            
              /* Return back to Dashboard or safe URL*/
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             {
@@ -116,6 +140,7 @@ public class AccountController : Controller
         {
             UserName = model.Email,
             Email = model.Email,
+            FullName = model.Name
         };
 
         /* CreateAsync hashes the password and stores it */
@@ -126,6 +151,10 @@ public class AccountController : Controller
             /*Assign the default "User" role to every new registration.
             This role can view and submit tickets but not access admin pages.*/
             await _userManager.AddToRoleAsync(user, "User");
+            
+            /* Store full name */
+            await _userManager.AddClaimAsync(user, new Claim("FullName", user.FullName));
+
 
             /* Automatically sign in the user after registering. isPersistent decides whether the cookie
              should get removed or not after closing browser*/
