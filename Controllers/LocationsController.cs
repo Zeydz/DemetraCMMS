@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using dotnet_projektuppgift.Data;
 using dotnet_projektuppgift.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_projektuppgift.Controllers
 {
+    [Authorize]
     public class LocationsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -50,16 +52,17 @@ namespace dotnet_projektuppgift.Controllers
         }
 
         // POST: Locations/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Building,Floor,CreatedAt")] Location location)
         {
             if (ModelState.IsValid)
             {
+                location.CreatedAt = DateTime.Now; // Set creation time
                 _context.Add(location);
                 await _context.SaveChangesAsync();
+                
+                TempData["Success"] = $"Location '{location.Name}' created successfully.";
                 return RedirectToAction(nameof(Index));
             }
             return View(location);
@@ -82,8 +85,6 @@ namespace dotnet_projektuppgift.Controllers
         }
 
         // POST: Locations/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Building,Floor,CreatedAt")] Location location)
@@ -99,6 +100,8 @@ namespace dotnet_projektuppgift.Controllers
                 {
                     _context.Update(location);
                     await _context.SaveChangesAsync();
+                    
+                    TempData["Success"] = $"Location '{location.Name}' updated successfully.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -116,36 +119,30 @@ namespace dotnet_projektuppgift.Controllers
             return View(location);
         }
 
-        // GET: Locations/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: Locations/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var location = await _context.Locations
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var location = await _context.Locations.FindAsync(id);
+    
             if (location == null)
             {
                 return NotFound();
             }
 
-            return View(location);
-        }
-
-        // POST: Locations/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var location = await _context.Locations.FindAsync(id);
-            if (location != null)
+            // Check if location has equipment (safety check)
+            var hasEquipment = await _context.Equipment.AnyAsync(e => e.LocationId == id);
+            if (hasEquipment)
             {
-                _context.Locations.Remove(location);
+                TempData["Error"] = "Cannot delete location - it has equipment assigned to it.";
+                return RedirectToAction(nameof(Index));
             }
 
+            _context.Locations.Remove(location);
             await _context.SaveChangesAsync();
+    
+            TempData["Success"] = $"Location '{location.Name}' deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
 

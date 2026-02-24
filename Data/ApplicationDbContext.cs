@@ -41,7 +41,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(location => location.Name).IsRequired().HasMaxLength(100);
             entity.Property(location => location.Building).IsRequired().HasMaxLength(50);
             entity.Property(location => location.Floor).IsRequired().HasMaxLength(20);
-            entity.Property(location => location.Description).IsRequired().HasMaxLength(500);
+            entity.Property(location => location.Description).HasMaxLength(500);
 
             /* Prevent duplicates of name*/
             entity.HasIndex(location => location.Name).IsUnique();
