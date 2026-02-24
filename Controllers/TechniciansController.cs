@@ -57,7 +57,7 @@ namespace dotnet_projektuppgift.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,FirstName,LastName,PhoneNumber,HireDate,CreatedAt")] Technician technician)
+        public async Task<IActionResult> Create([Bind("Id,UserId,HireDate,CreatedAt,IsActive")] Technician technician)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +91,7 @@ namespace dotnet_projektuppgift.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,FirstName,LastName,PhoneNumber,HireDate,CreatedAt")] Technician technician)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,HireDate,CreatedAt,IsActive")] Technician technician)
         {
             if (id != technician.Id)
             {

@@ -14,3 +14,4 @@ Dbseeder.cs
 *.sqlite
 *.sqlite3
 maintenance.db
+*DS_Store
