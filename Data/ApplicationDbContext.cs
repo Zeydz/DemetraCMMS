@@ -81,9 +81,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         {
             entity.HasKey(technician => technician.Id);
             entity.Property(technician => technician.UserId).IsRequired();
-            entity.Property(technician => technician.FirstName).IsRequired().HasMaxLength(50);
-            entity.Property(technician => technician.LastName).IsRequired().HasMaxLength(50);
-            entity.Property(technician => technician.PhoneNumber).HasMaxLength(20);
             entity.Property(technician => technician.HireDate).IsRequired();
 
             /* Relations */
