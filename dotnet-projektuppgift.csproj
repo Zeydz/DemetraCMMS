@@ -21,6 +21,14 @@
         </PackageReference>
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
     </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Technicians\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Technicians\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Technicians\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Technicians\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Technicians\Index.cshtml" />
+    </ItemGroup>
     
 <!--
     <PropertyGroup>

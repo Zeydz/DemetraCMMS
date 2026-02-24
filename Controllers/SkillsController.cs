@@ -38,9 +38,11 @@ namespace dotnet_projektuppgift.Controllers
                 return NotFound();
             }
 
+            /*Load skill with related technicians for details view*/
             var skill = await _context.Skills
                 .Include(s => s.TechnicianSkills)
                     .ThenInclude(ts => ts.Technician)
+                .ThenInclude(t => t.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             
             if (skill == null)
@@ -133,6 +135,7 @@ namespace dotnet_projektuppgift.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
+            /*Load skill with related technicians to check for dependencies*/
             var skill = await _context.Skills
                 .Include(s => s.TechnicianSkills)
                 .FirstOrDefaultAsync(s => s.Id == id);
