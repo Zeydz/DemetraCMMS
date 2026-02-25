@@ -1,62 +1,151 @@
 @model dotnet_projektuppgift.Models.Entities.Equipment
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Equipment";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="max-w-2xl">
 
-<h4>Equipment</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SerialNumber" class="control-label"></label>
-                <input asp-for="SerialNumber" class="form-control" />
-                <span asp-validation-for="SerialNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control"></select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LocationId" class="control-label"></label>
-                <select asp-for="LocationId" class="form-control" asp-items="ViewBag.LocationId"></select>
-                <span asp-validation-for="LocationId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PurchaseDate" class="control-label"></label>
-                <input asp-for="PurchaseDate" class="form-control" />
-                <span asp-validation-for="PurchaseDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    @* Breadcrumb *@
+    <div class="mb-6">
+        <a asp-action="Index" class="mono text-xs tracking-widest uppercase text-gray-400 hover:text-[#041f41] transition">
+            ← Back to Equipment
+        </a>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    @* Page header*@
+    <div class="mb-8">
+        <div class="flex items-center gap-3 mb-3">
+            <span class="w-1.5 h-1.5 bg-[#02f1b4] inline-block"></span>
+            <span class="mono text-[10px] tracking-[0.25em] text-[#02f1b4] uppercase font-bold">
+                Edit Equipment
+            </span>
+        </div>
+        <h2 class="text-2xl font-black text-[#041f41]">@Model.Name</h2>
+        <p class="text-sm text-gray-500 mt-2">Update equipment information below.</p>
+    </div>
+
+    @* Edit equipment form*@
+    <div class="bg-white border-2 border-gray-200 p-8">
+
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="mb-6 bg-red-50 border-2 border-red-200 p-4 text-sm text-red-800"></div>
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CreatedAt" />
+
+            <div class="mb-6">
+                @* Equipment name *@
+                <label asp-for="Name" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Equipment Name *
+                </label>
+                <input asp-for="Name"
+                       class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                              focus:outline-none focus:border-[#02f1b4] focus:bg-white transition"
+                       placeholder="e.g., HVAC Unit #1, Fire Alarm System"/>
+                <span asp-validation-for="Name" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            <div class="mb-6">
+                @* Serial Number*@
+                <label asp-for="SerialNumber" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Serial Number <span class="text-gray-400 font-normal">(Optional)</span>
+                </label>
+                <input asp-for="SerialNumber"
+                       class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                              focus:outline-none focus:border-[#02f1b4] focus:bg-white transition"
+                       placeholder="e.g., SN-2024-001"/>
+                <span asp-validation-for="SerialNumber" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            <div class="mb-6">
+                @* Location ID *@
+                <label asp-for="LocationId" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Location *
+                </label>
+                <select asp-for="LocationId" asp-items="@(ViewData["LocationId"] as SelectList)"
+                        class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                               focus:outline-none focus:border-[#02f1b4] focus:bg-white transition">
+                </select>
+                <span asp-validation-for="LocationId" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            <div class="mb-6">
+                @* Status*@
+                <label asp-for="Status" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Status *
+                </label>
+                <select asp-for="Status"
+                        class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                   focus:outline-none focus:border-[#02f1b4] focus:bg-white transition">
+                    <option value="0">Operational</option>
+                    <option value="1">Under Maintenance</option>
+                    <option value="2">Out of Service</option>
+                </select>
+                <span asp-validation-for="Status" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            <div class="mb-6">
+                @* Purchase date*@
+                <label asp-for="PurchaseDate" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Purchase Date <span class="text-gray-400 font-normal">(Optional)</span>
+                </label>
+                <input asp-for="PurchaseDate" type="date"
+                       class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                              focus:outline-none focus:border-[#02f1b4] focus:bg-white transition"/>
+                <span asp-validation-for="PurchaseDate" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            <div class="mb-6">
+                @* Description *@
+                <label asp-for="Description" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Description <span class="text-gray-400 font-normal">(Optional)</span>
+                </label>
+                <textarea asp-for="Description" rows="4"
+                          class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                                 focus:outline-none focus:border-[#02f1b4] focus:bg-white transition resize-none"
+                          placeholder="Additional details about this equipment..."></textarea>
+                <span asp-validation-for="Description" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            @* Metadata*@
+            <div class="mb-6 p-4 bg-gray-50 border-2 border-gray-200">
+                <div class="flex items-center justify-between text-xs">
+                    <div>
+                        <span class="mono tracking-widest uppercase text-gray-400 font-bold">Created:</span>
+                        <span class="mono text-gray-600 ml-2">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</span>
+                    </div>
+                    <div>
+                        <span class="mono tracking-widest uppercase text-gray-400 font-bold">ID:</span>
+                        <span class="mono text-gray-600 ml-2">#@Model.Id</span>
+                    </div>
+                </div>
+            </div>
+
+            @* Action buttons*@
+            <div class="flex items-center gap-3 pt-4 border-t-2 border-gray-100">
+                <button type="submit"
+                        class="cursor-pointer mono tracking-[0.15em] flex items-center gap-2 px-6 py-3 
+                               bg-[#041f41] text-[#02f1b4] text-xs font-black uppercase
+                               border-2 border-[#041f41] hover:bg-[#02f1b4] hover:text-[#041f41] transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Save Changes
+                </button>
+                <a asp-action="Index"
+                   class="mono tracking-[0.15em] px-6 py-3 text-xs font-bold uppercase
+                          border-2 border-gray-300 text-gray-600
+                          hover:border-[#041f41] hover:text-[#041f41] transition">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
 </div>
 
 @section Scripts {
