@@ -1,71 +1,193 @@
 @model IEnumerable<dotnet_projektuppgift.Models.Entities.Equipment>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Equipment";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Index</h1>
+<div class="space-y-6">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SerialNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PurchaseDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SerialNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PurchaseDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location.Building)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    @* Success / Error messages*@
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-50 border-2 border-green-200 p-4">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <p class="text-sm font-semibold text-green-800">@TempData["Success"]</p>
+            </div>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="bg-red-50 border-2 border-red-200 p-4">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                <p class="text-sm font-semibold text-red-800">@TempData["Error"]</p>
+            </div>
+        </div>
+    }
+
+    @* Page header *@
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <span class="w-1.5 h-1.5 bg-[#02f1b4] inline-block"></span>
+            <span class="mono text-[10px] tracking-[0.25em] text-[#02f1b4] uppercase font-bold">
+                All Equipment
+            </span>
+        </div>
+        <a asp-action="Create"
+           class="mono tracking-[0.15em] flex items-center gap-2 px-6 py-3 
+                  bg-[#041f41] text-[#02f1b4] text-xs font-black uppercase
+                  border-2 border-[#041f41] hover:bg-[#02f1b4] hover:text-[#041f41] transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+            </svg>
+            Add Equipment
+        </a>
+    </div>
+
+    <div class="bg-white border-2 border-gray-200">
+        @* Print out data if there is any*@
+        @if (Model.Any())
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 border-b-2 border-gray-200">
+                        <tr>
+                            <th class="mono text-left px-6 py-4 text-[10px] font-bold tracking-widest uppercase text-gray-600">
+                                Name
+                            </th>
+                            <th class="mono text-left px-6 py-4 text-[10px] font-bold tracking-widest uppercase text-gray-600">
+                                Serial Number
+                            </th>
+                            <th class="mono text-left px-6 py-4 text-[10px] font-bold tracking-widest uppercase text-gray-600">
+                                Location
+                            </th>
+                            <th class="mono text-left px-6 py-4 text-[10px] font-bold tracking-widest uppercase text-gray-600">
+                                Status
+                            </th>
+                            <th class="mono text-left px-6 py-4 text-[10px] font-bold tracking-widest uppercase text-gray-600">
+                                Purchase Date
+                            </th>
+                            <th class="mono text-right px-6 py-4 text-[10px] font-bold tracking-widest uppercase text-gray-600">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                    @* Loop through and print out data*@
+                    @foreach (var item in Model)
+                    {
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="font-bold text-sm text-[#041f41]">@item.Name</div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="mono text-xs text-gray-600">
+                                    @(string.IsNullOrEmpty(item.SerialNumber) ? "—" : item.SerialNumber)
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-gray-600">@item.Location.Name</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                @{
+                                    /*Determine status badge class and text based on equipment status*/
+                                    var statusClass = item.Status switch
+                                    {
+                                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.Operational => "bg-green-50 text-green-700 border-green-200",
+                                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.UnderMaintenance => "bg-yellow-50 text-yellow-700 border-yellow-200",
+                                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.OutOfService => "bg-red-50 text-red-700 border-red-200",
+                                        _ => "bg-gray-50 text-gray-700 border-gray-200"
+                                    };
+                                    var statusText = item.Status switch
+                                    {
+                                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.UnderMaintenance => "Under Maintenance",
+                                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.OutOfService => "Out of Service",
+                                        _ => item.Status.ToString()
+                                    };
+                                }
+                                <span class="mono inline-block px-2 py-1 text-[10px] font-bold tracking-widest uppercase border @statusClass">
+                                    @statusText
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="mono text-xs text-gray-400">
+                                    @(item.PurchaseDate.HasValue ? item.PurchaseDate.Value.ToString("yyyy-MM-dd") : "—")
+                                </div>
+                            </td>
+                            @* Actiion buttons*@
+                            <td class="px-6 py-4">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a asp-action="Details" asp-route-id="@item.Id"
+                                       class="mono tracking-[0.1em] px-3 py-1.5 text-[10px] font-bold uppercase
+                                                  border border-gray-300 text-gray-600
+                                                  hover:border-[#041f41] hover:text-[#041f41] transition"
+                                       title="View details">
+                                        View
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id"
+                                       class="mono tracking-[0.1em] px-3 py-1.5 text-[10px] font-bold uppercase
+                                                  border border-[#02f1b4] text-[#02f1b4]
+                                                  hover:bg-[#02f1b4] hover:text-[#041f41] transition"
+                                       title="Edit equipment">
+                                        Edit
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post"
+                                          onsubmit="return confirm('Are you sure you want to delete @item.Name?');"
+                                          class="inline">
+                                        <button type="submit"
+                                                class="cursor-pointer mono tracking-[0.1em] px-3 py-1.5 text-[10px] font-bold uppercase
+                                                           border border-red-300 text-red-600
+                                                           hover:bg-red-600 hover:text-white hover:border-red-600 transition"
+                                                title="Delete equipment">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            /* If no data exists, show placeholder message */
+            <div class="px-6 py-16 text-center">
+                <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <h3 class="text-lg font-bold text-[#041f41] mb-2">No equipment yet</h3>
+                <p class="text-sm text-gray-500 mb-6">Get started by adding your first equipment item.</p>
+                <a asp-action="Create"
+                   class="mono tracking-[0.15em] inline-flex items-center gap-2 px-6 py-3 
+                          bg-[#041f41] text-[#02f1b4] text-xs font-black uppercase
+                          border-2 border-[#041f41] hover:bg-[#02f1b4] hover:text-[#041f41] transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Add First Equipment
+                </a>
+            </div>
+        }
+
+    </div>
+
+    <div class="flex items-center justify-between text-sm text-gray-500">
+        <div>
+            Showing <span class="font-semibold text-[#041f41]">@Model.Count()</span>
+            equipment item@(Model.Count() == 1 ? "" : "s")
+        </div>
+    </div>
+
+</div>
