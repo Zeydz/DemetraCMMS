@@ -35,7 +35,9 @@ namespace dotnet_projektuppgift.Controllers
                 return NotFound();
             }
 
+            /* Load location with its related equipment*/
             var location = await _context.Locations
+                .Include(l => l.Equipment)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (location == null)
             {

@@ -27,7 +27,7 @@ public class Equipment
     
     public DateTime CreatedAt  { get; set; } = DateTime.UtcNow;
 
-    public Location Location { get; set; } = null!;
+    public Location? Location { get; set; }
     
     public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 

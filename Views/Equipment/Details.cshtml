@@ -1,60 +1,192 @@
 @model dotnet_projektuppgift.Models.Entities.Equipment
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Equipment Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Details</h1>
+<div class="max-w-4xl">
 
-<div>
-    <h4>Equipment</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SerialNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SerialNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PurchaseDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PurchaseDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Location.Building)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @* Breadcrumb *@
+    <div class="mb-6">
+        <a asp-action="Index" class="mono text-xs tracking-widest uppercase text-gray-400 hover:text-[#041f41] transition">
+            ← Back to Equipment
+        </a>
+    </div>
+
+    @* Page header*@
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-3 mb-3">
+                <span class="w-1.5 h-1.5 bg-[#02f1b4] inline-block"></span>
+                <span class="mono text-[10px] tracking-[0.25em] text-[#02f1b4] uppercase font-bold">
+                    Equipment Details
+                </span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-[#041f41]">@Model.Name</h2>
+        </div>
+        
+        <a asp-action="Edit" asp-route-id="@Model.Id"
+           class="mono tracking-[0.15em] flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold uppercase border-2 border-[#02f1b4] text-[#02f1b4] hover:bg-[#02f1b4] hover:text-[#041f41] transition w-full sm:w-auto">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+            Edit
+        </a>
+    </div>
+
+    <div class="bg-white border-2 border-gray-200 p-6 sm:p-8 space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+                <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                    Serial Number
+                </div>
+                <div class="mono text-sm text-gray-600">
+                    @(string.IsNullOrEmpty(Model.SerialNumber) ? "—" : Model.SerialNumber)
+                </div>
+            </div>
+
+            <div>
+                <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                    Status
+                </div>
+                @{
+                    /*Determine status badge class and text based on equipment status*/
+                    var statusClass = Model.Status switch
+                    {
+                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.Operational => "bg-green-50 text-green-700 border-green-200",
+                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.UnderMaintenance => "bg-yellow-50 text-yellow-700 border-yellow-200",
+                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.OutOfService => "bg-red-50 text-red-700 border-red-200",
+                        _ => "bg-gray-50 text-gray-700 border-gray-200"
+                    };
+                    var statusText = Model.Status switch
+                    {
+                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.UnderMaintenance => "Under Maintenance",
+                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.OutOfService => "Out of Service",
+                        _ => Model.Status.ToString()
+                    };
+                }
+                <span class="mono inline-block px-2 py-1 text-[10px] font-bold tracking-widest uppercase border @statusClass">
+                    @statusText
+                </span>
+            </div>
+
+            @* Location*@
+            <div>
+                <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                    Location
+                </div>
+                <div class="text-sm text-gray-600">@Model.Location.Name</div>
+            </div>
+
+            @* Purchase date*@
+            <div>
+                <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                    Purchase Date
+                </div>
+                <div class="mono text-sm text-gray-600">
+                    @(Model.PurchaseDate.HasValue ? Model.PurchaseDate.Value.ToString("yyyy-MM-dd") : "—")
+                </div>
+            </div>
+
+        </div>
+
+        @* Description *@
+        <div class="pt-6 border-t-2 border-gray-100">
+            <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                Description
+            </div>
+            <div class="text-sm text-gray-600 leading-relaxed">
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    @Model.Description
+                }
+                else
+                {
+                    <span class="text-gray-400 italic">No description provided</span>
+                }
+            </div>
+        </div>
+
+        @* Created at*@
+        <div class="pt-6 border-t-2 border-gray-100">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                
+                <div>
+                    <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                        Created
+                    </div>
+                    <div class="mono text-sm text-gray-600">
+                        @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")
+                    </div>
+                </div>
+
+                <div>
+                    <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                        Equipment ID
+                    </div>
+                    <div class="mono text-sm text-gray-600">
+                        #@Model.Id
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    @* Maintenance schedules*@
+    <div class="mt-6 bg-white border-2 border-gray-200">
+        <div class="px-4 sm:px-6 py-4 border-b-2 border-gray-200 bg-gray-50">
+            <div class="flex items-center gap-3">
+                <svg class="w-5 h-5 text-[#02f1b4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                <span class="mono text-xs tracking-widest uppercase text-gray-600 font-bold">
+                    Maintenance Schedules
+                </span>
+            </div>
+        </div>
+        <div class="px-4 sm:px-6 py-8 text-center text-gray-400 text-sm">
+            <p>Maintenance schedules will appear here</p>
+        </div>
+    </div>
+
+    @* Service tickets *@
+    <div class="mt-6 bg-white border-2 border-gray-200">
+        <div class="px-4 sm:px-6 py-4 border-b-2 border-gray-200 bg-gray-50">
+            <div class="flex items-center gap-3">
+                <svg class="w-5 h-5 text-[#02f1b4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                </svg>
+                <span class="mono text-xs tracking-widest uppercase text-gray-600 font-bold">
+                    Service Tickets
+                </span>
+            </div>
+        </div>
+        <div class="px-4 sm:px-6 py-8 text-center text-gray-400 text-sm">
+            <p>Service tickets for this equipment will appear here</p>
+        </div>
+    </div>
+
+    @* ACtion buttons*@
+    <div class="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <a asp-action="Index"
+           class="mono tracking-[0.15em] px-4 py-2.5 text-xs font-bold uppercase text-center border-2 border-gray-300 text-gray-600 hover:border-[#041f41] hover:text-[#041f41] transition w-full sm:w-auto">
+            ← Back to List
+        </a>
+        
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" 
+              onsubmit="return confirm('Are you sure you want to delete @Model.Name? This action cannot be undone.');"
+              class="w-full sm:w-auto">
+            <button type="submit"
+                    class="mono tracking-[0.15em] flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold uppercase border-2 border-red-300 text-red-600 hover:bg-red-600 hover:text-white hover:border-red-600 transition w-full">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+                Delete Equipment
+            </button>
+        </form>
+    </div>
+
 </div>
