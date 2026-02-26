@@ -7,11 +7,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using dotnet_projektuppgift.Data;
 using dotnet_projektuppgift.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_projektuppgift.Controllers
 {
+    [Authorize]
     public class TechniciansController : Controller
     {
+        /*Database context for accessing technician and related data*/
         private readonly ApplicationDbContext _context;
 
         public TechniciansController(ApplicationDbContext context)
@@ -22,8 +25,11 @@ namespace dotnet_projektuppgift.Controllers
         // GET: Technicians
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Technicians.Include(t => t.User);
-            return View(await applicationDbContext.ToListAsync());
+            /* Load technicians with user accounts*/
+            var technicians = await _context.Technicians
+                .Include(t => t.User)
+                .ToListAsync();
+            return View(technicians);
         }
 
         // GET: Technicians/Details/5
@@ -33,10 +39,14 @@ namespace dotnet_projektuppgift.Controllers
             {
                 return NotFound();
             }
-
+                
+                /*Load technician with related user and skills for details view*/
             var technician = await _context.Technicians
                 .Include(t => t.User)
+                .Include(t => t.TechnicianSkills)
+                    .ThenInclude(ts => ts.Skill)
                 .FirstOrDefaultAsync(m => m.Id == id);
+            
             if (technician == null)
             {
                 return NotFound();
@@ -48,7 +58,23 @@ namespace dotnet_projektuppgift.Controllers
         // GET: Technicians/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            var availableUsers = _context.Users
+                .Where(u => u.Technician == null)
+                .Select(u => new
+                {
+                    u.Id,
+                    DisplayName = u.FullName + " (" + u.Email + ")"
+                })
+                .ToList();
+
+            if (!availableUsers.Any())
+            {
+                TempData["Error"] =
+                    "No available users to create technician from. All users already have technician records.";
+            }
+            
+            
+            ViewData["UserId"] = new SelectList(availableUsers, "Id", "DisplayName");
             return View();
         }
 
@@ -57,15 +83,28 @@ namespace dotnet_projektuppgift.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,HireDate,CreatedAt,IsActive")] Technician technician)
+        public async Task<IActionResult> Create([Bind("UserId,HireDate,IsActive")] Technician technician)
         {
             if (ModelState.IsValid)
             {
+                technician.CreatedAt = DateTime.UtcNow;
+
                 _context.Add(technician);
                 await _context.SaveChangesAsync();
+                
+                var user = await _context.Users.FindAsync(technician.UserId);
+
+                TempData["Success"] =
+                    $"Technician '{user?.FullName}' created successfully.";
+                
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", technician.UserId);
+            var availableUsers = _context.Users
+                .Where(u => u.Technician == null)
+                .Select(u => new { u.Id, DisplayName = u.FullName + " (" + u.Email + ")" })
+                .ToList();
+
+            ViewData["UserId"] = new SelectList(availableUsers, "Id", "DisplayName", technician.UserId);
             return View(technician);
         }
 
@@ -77,12 +116,15 @@ namespace dotnet_projektuppgift.Controllers
                 return NotFound();
             }
 
-            var technician = await _context.Technicians.FindAsync(id);
+            var technician = await _context.Technicians
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            
             if (technician == null)
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", technician.UserId);
+            ViewData["UserName"] = technician.User?.FullName ?? "Unknown";
             return View(technician);
         }
 
@@ -104,6 +146,13 @@ namespace dotnet_projektuppgift.Controllers
                 {
                     _context.Update(technician);
                     await _context.SaveChangesAsync();
+
+                    var user =
+                        await _context.Users.FindAsync(technician
+                            .UserId);
+
+                    TempData["Success"] =
+                        $"Technician '{user?.FullName}' updated successfully.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -118,41 +167,47 @@ namespace dotnet_projektuppgift.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", technician.UserId);
-            return View(technician);
-        }
-
-        // GET: Technicians/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var technician = await _context.Technicians
+            
+            /* Reload user info */
+            var tech = await _context.Technicians
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (technician == null)
-            {
-                return NotFound();
-            }
-
+            
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", technician.UserId);
             return View(technician);
         }
 
         // POST: Technicians/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var technician = await _context.Technicians.FindAsync(id);
-            if (technician != null)
+            /*Load technician with related data to check relations*/
+            var technician = await _context.Technicians
+                .Include(t => t.User)  
+                .Include(t => t.AssignedTickets)  
+                .Include(t => t.TechnicianSkills)  
+                .FirstOrDefaultAsync(t => t.Id == id);
+            
+            if (technician == null)
             {
-                _context.Technicians.Remove(technician);
+                return NotFound();
             }
 
+
+            /*SAFETY CHECK: Prevent deletion if technician has assigned tickets*/
+
+            if (technician.AssignedTickets.Any())
+            {
+                TempData["Error"] = $"Cannot delete technician '{technician.Name}' - they have {technician.AssignedTickets.Count} assigned ticket(s).";
+                return RedirectToAction(nameof(Index));
+            }
+            
+            /*Safe to delete*/
+            _context.Technicians.Remove(technician);
             await _context.SaveChangesAsync();
+            
+            TempData["Success"] = $"Technician '{technician.Name}' deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
 
