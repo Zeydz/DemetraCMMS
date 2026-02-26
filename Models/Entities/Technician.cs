@@ -18,8 +18,8 @@ public class Technician
     
     /* Navigation properties*/
 
-    public ApplicationUser User { get; set; } = null!;
-    
+    public ApplicationUser? User { get; set; }
+
     public ICollection<TechnicianSkill> TechnicianSkills { get; set; } = new List<TechnicianSkill>();
     public ICollection<Ticket> AssignedTickets { get; set; } = new List<Ticket>();
     
