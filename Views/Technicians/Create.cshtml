@@ -1,45 +1,101 @@
 @model dotnet_projektuppgift.Models.Entities.Technician
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Technician";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Create</h1>
+<div class="max-w-2xl">
 
-<h4>Technician</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="HireDate" class="control-label"></label>
-                <input asp-for="HireDate" class="form-control" />
-                <span asp-validation-for="HireDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    @* Page header *@
+    <div class="mb-6">
+        <a asp-action="Index" class="mono text-xs tracking-widest uppercase text-gray-400 hover:text-[#041f41] transition">
+            ← Back to Technicians
+        </a>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="mb-8">
+        <div class="flex items-center gap-3 mb-3">
+            <span class="w-1.5 h-1.5 bg-[#02f1b4] inline-block"></span>
+            <span class="mono text-[10px] tracking-[0.25em] text-[#02f1b4] uppercase font-bold">
+                New Technician
+            </span>
+        </div>
+        <h2 class="text-2xl font-black text-[#041f41]">Add Technician</h2>
+        <p class="text-sm text-gray-500 mt-2">Link an existing user account to a technician profile.</p>
+    </div>
+
+    @* Create form *@
+    <div class="bg-white border-2 border-gray-200 p-8">
+
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="mb-6 bg-red-50 border-2 border-red-200 p-4 text-sm text-red-800"></div>
+
+            @* User selection *@
+            <div class="mb-6">
+                <label asp-for="UserId" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    User Account *
+                </label>
+                <select asp-for="UserId" asp-items="@(ViewData["UserId"] as SelectList)"
+                        class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                               focus:outline-none focus:border-[#02f1b4] focus:bg-white transition">
+                    <option value="">Select a user...</option>
+                </select>
+                <span asp-validation-for="UserId" class="text-xs text-red-600 mt-1 block"></span>
+                <p class="text-xs text-gray-500 mt-2">
+                    Only users without an existing technician profile are shown.
+                </p>
+            </div>
+
+            @* Hire Date *@
+            <div class="mb-6">
+                <label asp-for="HireDate" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Hire Date *
+                </label>
+                <input asp-for="HireDate" type="date"
+                       class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                              focus:outline-none focus:border-[#02f1b4] focus:bg-white transition" />
+                <span asp-validation-for="HireDate" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            @* Active Status *@
+            <div class="mb-6">
+                <label class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-3">
+                    Status
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input asp-for="IsActive" type="checkbox" 
+                           class="w-5 h-5 border-2 border-gray-300 text-[#02f1b4] focus:ring-[#02f1b4] focus:ring-offset-0" />
+                    <span class="text-sm text-gray-700">
+                        Active (technician is currently employed)
+                    </span>
+                </label>
+                <span asp-validation-for="IsActive" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            @* Action buttons *@
+            <div class="flex items-center gap-3 pt-4 border-t-2 border-gray-100">
+                <button type="submit"
+                        class="mono tracking-[0.15em] flex items-center gap-2 px-6 py-3 
+                               bg-[#041f41] text-[#02f1b4] text-xs font-black uppercase
+                               border-2 border-[#041f41] hover:bg-[#02f1b4] hover:text-[#041f41] transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Create Technician
+                </button>
+                <a asp-action="Index"
+                   class="mono tracking-[0.15em] px-6 py-3 text-xs font-bold uppercase
+                          border-2 border-gray-300 text-gray-600
+                          hover:border-[#041f41] hover:text-[#041f41] transition">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
 </div>
 
 @section Scripts {
