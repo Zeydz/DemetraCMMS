@@ -1,0 +1,121 @@
+@model dotnet_projektuppgift.Models.ViewModels.EditUserViewModel
+
+@{
+    ViewData["Title"] = "Edit User";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="max-w-2xl">
+
+    @* Breadcrumb*@
+    <div class="mb-6">
+        <a asp-action="Index" class="mono text-xs tracking-widest uppercase text-gray-400 hover:text-[#041f41] transition">
+            ← Back to Users
+        </a>
+    </div>
+
+    @* Page header*@
+    <div class="mb-8">
+        <div class="flex items-center gap-3 mb-3">
+            <span class="w-1.5 h-1.5 bg-[#02f1b4] inline-block"></span>
+            <span class="mono text-[10px] tracking-[0.25em] text-[#02f1b4] uppercase font-bold">
+                Edit User
+            </span>
+        </div>
+        <h2 class="text-2xl font-black text-[#041f41]">@Model.FullName</h2>
+        <p class="text-sm text-gray-500 mt-2">Update user information and role.</p>
+    </div>
+
+    @* Content*@
+    <div class="bg-white border-2 border-gray-200 p-8">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="mb-6 bg-red-50 border-2 border-red-200 p-4 text-sm text-red-800"></div>
+
+            <input type="hidden" asp-for="Id" />
+
+            @* Full name *@
+            <div class="mb-6">
+                <label asp-for="FullName" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Full Name *
+                </label>
+                <input asp-for="FullName" 
+                       class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                              focus:outline-none focus:border-[#02f1b4] focus:bg-white transition" />
+                <span asp-validation-for="FullName" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            @* Email address*@
+            <div class="mb-6">
+                <label asp-for="Email" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Email Address *
+                </label>
+                <input asp-for="Email" type="email"
+                       class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                              focus:outline-none focus:border-[#02f1b4] focus:bg-white transition" />
+                <span asp-validation-for="Email" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            @* Phone number *@
+            <div class="mb-6">
+                <label asp-for="PhoneNumber" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Phone Number <span class="text-gray-400 font-normal">(Optional)</span>
+                </label>
+                <input asp-for="PhoneNumber" type="tel"
+                       class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                              focus:outline-none focus:border-[#02f1b4] focus:bg-white transition" />
+                <span asp-validation-for="PhoneNumber" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            @* Role*@
+            <div class="mb-6">
+                <label class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Current Role
+                </label>
+                <div class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-100 text-gray-600 font-medium">
+                    @(string.IsNullOrEmpty(Model.CurrentRole) ? "No role assigned" : Model.CurrentRole)
+                </div>
+            </div>
+
+            @* Role *@
+            <div class="mb-6">
+                <label asp-for="NewRole" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Change Role <span class="text-gray-400 font-normal">(Optional)</span>
+                </label>
+                
+                <select asp-for="NewRole" asp-items="@(ViewData["Roles"] as SelectList)"
+                        class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+               focus:outline-none focus:border-[#02f1b4] focus:bg-white transition">
+                    <option value="">Keep current role</option>
+                </select>
+                
+                <span asp-validation-for="NewRole" class="text-xs text-red-600 mt-1 block"></span>
+                <p class="text-xs text-gray-500 mt-2">
+                    Leave blank to keep the current role.
+                </p>
+            </div>
+
+            @* Action buttons *@
+            <div class="flex items-center gap-3 pt-4 border-t-2 border-gray-100">
+                <button type="submit"
+                        class="cursor-pointer mono tracking-[0.15em] flex items-center gap-2 px-6 py-3 
+                               bg-[#041f41] text-[#02f1b4] text-xs font-black uppercase
+                               border-2 border-[#041f41] hover:bg-[#02f1b4] hover:text-[#041f41] transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Save Changes
+                </button>
+                <a asp-action="Index"
+                   class="mono tracking-[0.15em] px-6 py-3 text-xs font-bold uppercase
+                          border-2 border-gray-300 text-gray-600
+                          hover:border-[#041f41] hover:text-[#041f41] transition">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
