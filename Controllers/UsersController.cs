@@ -165,14 +165,7 @@ namespace dotnet_projektuppgift.Controllers
                         TempData["Success"] = $"User '{user.FullName}' created successfully.";
                     }
                     
-                    TempData["Success"] = $"User '{user.FullName}' created successfully.";
                     return RedirectToAction(nameof(Index));
-                }
-
-                /*If creation failed, add errors to ModelState*/
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
@@ -246,12 +239,69 @@ namespace dotnet_projektuppgift.Controllers
 
                 if (result.Succeeded)
                 {
-                    /*Update role if changed*/
+                    /* Role change logic with technician record sync*/
                     var currentRoles = await _userManager.GetRolesAsync(user);
+                    var currentRole =
+                        currentRoles.FirstOrDefault() ?? "";
                     
-                    if (!string.IsNullOrEmpty(model.NewRole) && 
-                        (currentRoles.Count == 0 || currentRoles[0] != model.NewRole))
+                    if (!string.IsNullOrEmpty(model.NewRole) && currentRole != model.NewRole)
                     {
+                        
+                        /*Role is being changed*/
+                        var existingTechnician = await _context.Technicians
+                            .Include(t => t.AssignedTickets)
+                            .Include(t => t.TechnicianSkills)
+                            .FirstOrDefaultAsync(t => t.UserId == user.Id);
+                        
+                        
+                        /* CASE 1: Changing FROM "Technician" to something else */
+                        if (currentRole == "Technician" &&
+                            model.NewRole != "Technician")
+                        {
+                            if (existingTechnician != null)
+                            {
+                                /* Cant remove technician if there are assigned tickets */
+                                if (existingTechnician.AssignedTickets
+                                    .Any())
+                                {
+                                    TempData["Error"] = $"Cannot change role from Technician - user has {existingTechnician.AssignedTickets.Count} assigned ticket(s). Reassign or close tickets first.";
+                                    return RedirectToAction(nameof(Index));
+                                }
+                                
+                                /* Safe to remove technician*/
+                                _context.Technicians.Remove(existingTechnician);
+                                await _context.SaveChangesAsync();
+                                
+                                TempData["Success"] = $"User '{user.FullName}' role changed to '{model.NewRole}' and technician profile removed.";
+                            }
+                        }
+                        
+                        /* CASE 2: Changing TO "Technician" from another role*/
+                        else if (currentRole != "Technician" && model.NewRole == "Technician")
+                        {
+                            if (existingTechnician == null)
+                            {
+                                /*Create new technician record with default values*/
+                                var technician = new Technician
+                                {
+                                    UserId = user.Id,
+                                    HireDate = DateTime.Today,
+                                    IsActive = true,
+                                    CreatedAt = DateTime.UtcNow
+                                };
+                                
+                                _context.Technicians.Add(technician);
+                                await _context.SaveChangesAsync();
+                                
+                                TempData["Success"] = $"User '{user.FullName}' role changed to 'Technician' and technician profile created. You can edit hire date in the Technicians section.";
+                            }
+                        }
+                        else
+                        {
+                            /*Role is changing but not involving Technician role, just update role*/
+                            TempData["Success"] = $"User '{user.FullName}' role changed to '{model.NewRole}'.";
+                        }
+                        
                         /*Remove all current roles*/
                         if (currentRoles.Count > 0)
                         {
@@ -261,24 +311,16 @@ namespace dotnet_projektuppgift.Controllers
                         /*Add new role*/
                         await _userManager.AddToRoleAsync(user, model.NewRole);
                     }
+                    else
+                    {
+                        TempData["Success"] = $"User '{user.FullName}' updated successfully.";
 
-                    TempData["Success"] = $"User '{user.FullName}' updated successfully.";
+                    }
+                    
                     return RedirectToAction(nameof(Index));
                 }
-
-                /*If update failed, add errors*/
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
             }
-
-            /*If we got here, something probably failed*/
-            var allRoles = await _roleManager.Roles.ToListAsync();
-            ViewData["Roles"] = new SelectList(allRoles, "Name", "Name");
-
-            
-            return View(model);
+            return RedirectToAction(nameof(Index));
         }
         
         // POST: Users/Delete/5
