@@ -302,7 +302,7 @@ namespace dotnet_projektuppgift.Controllers
                 return RedirectToAction(nameof(Index));
             }
             
-            // SAFETY CHECK: Check if user has a technician record
+            /*SAFETY CHECK: Check if user has a technician record*/
             var technician = await _context.Technicians
                 .Include(t => t.AssignedTickets)
                 .FirstOrDefaultAsync(t => t.UserId == user.Id);
