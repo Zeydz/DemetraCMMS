@@ -1,0 +1,184 @@
+@model dotnet_projektuppgift.Models.Entities.Ticket
+
+@{
+    ViewData["Title"] = "Ticket Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="max-w-4xl">
+
+    @* Breadcrumb *@
+    <div class="mb-6">
+        <a asp-action="Index" class="mono text-xs tracking-widest uppercase text-gray-400 hover:text-[#041f41] transition">
+            ← Back to Tickets
+        </a>
+    </div>
+
+    @* Success message *@
+    @if (TempData["Success"] != null)
+    {
+        <div class="mb-6 bg-green-50 border-2 border-green-200 p-4">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <p class="text-sm font-semibold text-green-800">@TempData["Success"]</p>
+            </div>
+        </div>
+    }
+
+    @* Page header*@
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-3 mb-3">
+                <span class="w-1.5 h-1.5 bg-[#02f1b4] inline-block"></span>
+                <span class="mono text-[10px] tracking-[0.25em] text-[#02f1b4] uppercase font-bold">
+                    Ticket #@Model.Id
+                </span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-[#041f41] mb-3">@Model.Title</h2>
+            
+            @{
+                var priorityClass = Model.Priority switch
+                {
+                    dotnet_projektuppgift.Models.Enums.TicketPriority.Critical => "bg-red-50 text-red-700 border-red-200",
+                    dotnet_projektuppgift.Models.Enums.TicketPriority.High => "bg-orange-50 text-orange-700 border-orange-200",
+                    dotnet_projektuppgift.Models.Enums.TicketPriority.Medium => "bg-yellow-50 text-yellow-700 border-yellow-200",
+                    _ => "bg-blue-50 text-blue-700 border-blue-200"
+                };
+
+                var statusClass = Model.Status switch
+                {
+                    dotnet_projektuppgift.Models.Enums.TicketStatus.New => "bg-gray-50 text-gray-700 border-gray-200",
+                    dotnet_projektuppgift.Models.Enums.TicketStatus.Assigned => "bg-blue-50 text-blue-700 border-blue-200",
+                    dotnet_projektuppgift.Models.Enums.TicketStatus.InProgress => "bg-purple-50 text-purple-700 border-purple-200",
+                    dotnet_projektuppgift.Models.Enums.TicketStatus.Resolved => "bg-green-50 text-green-700 border-green-200",
+                    _ => "bg-gray-50 text-gray-700 border-gray-200"
+                };
+            }
+            
+            @* Priority *@
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="mono inline-block px-2 py-1 text-[10px] font-bold tracking-widest uppercase border @priorityClass">
+                    @Model.Priority Priority
+                </span>
+                @* Statis*@
+                <span class="mono inline-block px-2 py-1 text-[10px] font-bold tracking-widest uppercase border @statusClass">
+                    @Model.Status
+                </span>
+            </div>
+        </div>
+        
+        <div class="flex flex-wrap items-center gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.Id"
+               class="mono tracking-[0.15em] flex items-center gap-2 px-4 py-2.5 text-xs font-bold uppercase border-2 border-[#02f1b4] text-[#02f1b4] hover:bg-[#02f1b4] hover:text-[#041f41] transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+                Edit
+            </a>
+        </div>
+    </div>
+
+    @* Main info, the first card *@
+    <div class="bg-white border-2 border-gray-200 p-6 sm:p-8 mb-6">
+        <h3 class="mono text-xs tracking-widest uppercase text-gray-400 font-bold mb-4">Description</h3>
+        <p class="text-gray-700 whitespace-pre-wrap">@Model.Description</p>
+    </div>
+
+    @* Details, second card  *@
+    <div class="bg-white border-2 border-gray-200 p-6 sm:p-8 mb-6">
+        <h3 class="mono text-xs tracking-widest uppercase text-gray-400 font-bold mb-4">Details</h3>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+                <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                    Equipment
+                </div>
+                <div class="text-sm font-semibold text-[#041f41]">
+                    <a asp-controller="Equipment" asp-action="Details" asp-route-id="@Model.EquipmentId" 
+                       class="hover:text-[#02f1b4] transition">
+                        @Model.Equipment?.Name
+                    </a>
+                </div>
+                <div class="text-xs text-gray-500 mt-1">@Model.Equipment?.Location?.Name</div>
+            </div>
+
+            @* Assigned to *@
+            <div>
+                <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                    Assigned To
+                </div>
+                @if (Model.AssignedTo != null)
+                {
+                    <div class="text-sm font-semibold text-[#041f41]">
+                        <a asp-controller="Technicians" asp-action="Details" asp-route-id="@Model.AssignedTo.Id"
+                           class="hover:text-[#02f1b4] transition">
+                            @Model.AssignedTo.User?.FullName
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-sm text-gray-400">Unassigned</div>
+                }
+            </div>
+
+            @* Reported by*@
+            <div>
+                <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                    Reported By
+                </div>
+                <div class="text-sm text-gray-600">@Model.ReportedBy?.FullName</div>
+            </div>
+
+            @* Created date*@
+            <div>
+                <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                    Created Date
+                </div>
+                <div class="mono text-sm text-gray-600">@Model.CreatedDate.ToString("MMM dd, yyyy HH:mm")</div>
+            </div>
+
+            @* Due date *@
+            <div>
+                <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                    Due Date
+                </div>
+                <div class="mono text-sm text-gray-600">@Model.DueDate.ToString("MMM dd, yyyy HH:mm")</div>
+            </div>
+
+            @*Only show resolved date if ticket is resolved*@
+            @if (Model.ResolvedDate.HasValue)
+            {
+                <div>
+                    <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-2">
+                        Resolved Date
+                    </div>
+                    <div class="mono text-sm text-gray-600">@Model.ResolvedDate.Value.ToString("MMM dd, yyyy HH:mm")</div>
+                </div>
+            }
+        </div>
+    </div>
+    @* Action buttons *@
+    <div class="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <a asp-action="Index"
+           class="mono tracking-[0.15em] px-4 py-2.5 text-xs font-bold uppercase text-center border-2 border-gray-300 text-gray-600 hover:border-[#041f41] hover:text-[#041f41] transition w-full sm:w-auto">
+            ← Back to List
+        </a>
+
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post"
+              onsubmit="return confirm('Are you sure you want to delete this ticket?');"
+              class="w-full sm:w-auto">
+            <button type="submit"
+                    class="cursor-pointer mono tracking-[0.15em] flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold uppercase border-2 border-red-300 text-red-600 hover:bg-red-600 hover:text-white hover:border-red-600 transition w-full">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+                Delete Ticket
+            </button>
+        </form>
+    </div>
+
+</div>
