@@ -33,13 +33,32 @@ namespace dotnet_projektuppgift.Controllers
             return View();
         }
 
-        
-        
-
-        // GET: /Public/CheckStatus
-        public IActionResult CheckStatus()
+        // GET: /Public/CheckStatus?ticketId=123
+        public async Task<IActionResult> CheckStatus(int? ticketId)
         {
-            return View();
+            /*If no ticket ID provided, show search form*/
+            if (!ticketId.HasValue)
+            {
+                return View();
+            }
+
+            /* Look up the ticket with information*/
+            var ticket = await _context.Tickets
+                .Include(t => t.Equipment)
+                .ThenInclude(e => e.Location)
+                .Include(t => t.AssignedTo)
+                .ThenInclude(a => a.User)
+                .FirstOrDefaultAsync(t => t.Id == ticketId.Value);
+
+            /*If ticket not found, show error*/
+            if (ticket == null)
+            {
+                TempData["Error"] = $"Ticket #{ticketId} not found. Please check your ticket number and try again.";
+                return View();
+            }
+
+            /*Show ticket details*/
+            return View(ticket);
         }
 
         // POST: /Public/SubmitTicket
