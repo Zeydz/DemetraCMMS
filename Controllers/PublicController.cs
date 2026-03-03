@@ -50,7 +50,7 @@ namespace dotnet_projektuppgift.Controllers
             if (!ModelState.IsValid)
             {
                 TempData["Error"] = "Please fill in all required fields correctly.";
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Public");
             }
 
             /*Create the ticket*/
@@ -86,7 +86,7 @@ namespace dotnet_projektuppgift.Controllers
 
             if (ticket == null)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Public");
             }
 
             return View(ticket);

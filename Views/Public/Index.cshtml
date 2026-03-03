@@ -118,6 +118,18 @@
 @* Main content *@
 <section class="bg-white py-20">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        @* Error handling*@
+        @if (TempData["Error"] != null)
+        {
+            <div class="mb-8 bg-red-50 border-2 border-red-200 p-4">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p class="text-sm font-semibold text-red-800">@TempData["Error"]</p>
+                </div>
+            </div>
+        }
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-16">
 
             @* Left side - FORM*@
@@ -251,7 +263,7 @@
                     @* Submit button *@
                     <div class="pt-2">
                         <button type="submit"
-                                class="w-full bg-[#041f41] text-[#02f1b4] py-4 mono font-black text-sm tracking-widest uppercase
+                                class="cursor-pointer w-full bg-[#041f41] text-[#02f1b4] py-4 mono font-black text-sm tracking-widest uppercase
                                        hover:bg-[#02f1b4] hover:text-[#041f41] transition border-2 border-[#041f41]">
                             Submit Service Request →
                         </button>

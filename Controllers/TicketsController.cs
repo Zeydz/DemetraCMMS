@@ -24,6 +24,7 @@ namespace dotnet_projektuppgift.Controllers
             _userManager = userManager;
         }
 
+        [Authorize]
         // GET: Tickets
         public async Task<IActionResult> Index()
         {
@@ -40,6 +41,7 @@ namespace dotnet_projektuppgift.Controllers
             return View(tickets);
         }
 
+        [Authorize]
         // GET: Tickets/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -63,7 +65,6 @@ namespace dotnet_projektuppgift.Controllers
 
             return View(ticket);
         }
-
         // GET: Tickets/Create
         public async Task<IActionResult> Create()
         {
@@ -96,7 +97,7 @@ namespace dotnet_projektuppgift.Controllers
 
             return View();
         }
-
+        
         // POST: Tickets/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -146,6 +147,7 @@ namespace dotnet_projektuppgift.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin, Manager")]
         // GET: Tickets/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -197,6 +199,7 @@ namespace dotnet_projektuppgift.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = "Admin, Manager")]
         // POST: Tickets/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -259,7 +262,7 @@ namespace dotnet_projektuppgift.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
+        [Authorize(Roles = "Admin, Manager")]
         // POST: Tickets/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]

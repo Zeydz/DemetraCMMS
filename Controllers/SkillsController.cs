@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_projektuppgift.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, Manager")]
     public class SkillsController : Controller
     {
         private readonly ApplicationDbContext _context;
