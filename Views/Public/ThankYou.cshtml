@@ -1,3 +1,4 @@
+@using dotnet_projektuppgift.Models.Enums
 @model dotnet_projektuppgift.Models.Entities.Ticket
 
 @{
@@ -75,9 +76,9 @@
                         @{
                             var priorityClass = Model.Priority switch
                             {
-                                dotnet_projektuppgift.Models.Enums.TicketPriority.Critical => "bg-red-500",
-                                dotnet_projektuppgift.Models.Enums.TicketPriority.High => "bg-orange-500",
-                                dotnet_projektuppgift.Models.Enums.TicketPriority.Medium => "bg-yellow-500",
+                                TicketPriority.Critical => "bg-red-500",
+                                TicketPriority.High => "bg-orange-500",
+                                TicketPriority.Medium => "bg-yellow-500",
                                 _ => "bg-blue-500"
                             };
                         }

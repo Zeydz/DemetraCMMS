@@ -1,3 +1,4 @@
+@using dotnet_projektuppgift.Models.Enums
 @model dotnet_projektuppgift.Models.Entities.Location
 
 @{
@@ -161,15 +162,15 @@
                                     /*Determine status badge class and text based on equipment status*/
                                     var statusClass = equipment.Status switch
                                     {
-                                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.Operational => "bg-green-50 text-green-700 border-green-200",
-                                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.UnderMaintenance => "bg-yellow-50 text-yellow-700 border-yellow-200",
-                                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.OutOfService => "bg-red-50 text-red-700 border-red-200",
+                                        EquipmentStatus.Operational => "bg-green-50 text-green-700 border-green-200",
+                                        EquipmentStatus.UnderMaintenance => "bg-yellow-50 text-yellow-700 border-yellow-200",
+                                        EquipmentStatus.OutOfService => "bg-red-50 text-red-700 border-red-200",
                                         _ => "bg-gray-50 text-gray-700 border-gray-200"
                                     };
                                     var statusText = equipment.Status switch
                                     {
-                                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.UnderMaintenance => "Under Maintenance",
-                                        dotnet_projektuppgift.Models.Enums.EquipmentStatus.OutOfService => "Out of Service",
+                                        EquipmentStatus.UnderMaintenance => "Under Maintenance",
+                                        EquipmentStatus.OutOfService => "Out of Service",
                                         _ => equipment.Status.ToString()
                                     };
                                 }
