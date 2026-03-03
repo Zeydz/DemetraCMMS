@@ -1,3 +1,4 @@
+@using dotnet_projektuppgift.Models.Enums
 @model dotnet_projektuppgift.Models.Entities.Ticket
 
 @{
@@ -41,18 +42,18 @@
             @{
                 var priorityClass = Model.Priority switch
                 {
-                    dotnet_projektuppgift.Models.Enums.TicketPriority.Critical => "bg-red-50 text-red-700 border-red-200",
-                    dotnet_projektuppgift.Models.Enums.TicketPriority.High => "bg-orange-50 text-orange-700 border-orange-200",
-                    dotnet_projektuppgift.Models.Enums.TicketPriority.Medium => "bg-yellow-50 text-yellow-700 border-yellow-200",
+                    TicketPriority.Critical => "bg-red-50 text-red-700 border-red-200",
+                    TicketPriority.High => "bg-orange-50 text-orange-700 border-orange-200",
+                    TicketPriority.Medium => "bg-yellow-50 text-yellow-700 border-yellow-200",
                     _ => "bg-blue-50 text-blue-700 border-blue-200"
                 };
 
                 var statusClass = Model.Status switch
                 {
-                    dotnet_projektuppgift.Models.Enums.TicketStatus.New => "bg-gray-50 text-gray-700 border-gray-200",
-                    dotnet_projektuppgift.Models.Enums.TicketStatus.Assigned => "bg-blue-50 text-blue-700 border-blue-200",
-                    dotnet_projektuppgift.Models.Enums.TicketStatus.InProgress => "bg-purple-50 text-purple-700 border-purple-200",
-                    dotnet_projektuppgift.Models.Enums.TicketStatus.Resolved => "bg-green-50 text-green-700 border-green-200",
+                    TicketStatus.New => "bg-gray-50 text-gray-700 border-gray-200",
+                    TicketStatus.Assigned => "bg-blue-50 text-blue-700 border-blue-200",
+                    TicketStatus.InProgress => "bg-purple-50 text-purple-700 border-purple-200",
+                    TicketStatus.Resolved => "bg-green-50 text-green-700 border-green-200",
                     _ => "bg-gray-50 text-gray-700 border-gray-200"
                 };
             }
