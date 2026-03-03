@@ -12,7 +12,7 @@ using dotnet_projektuppgift.ViewModels;
 
 namespace dotnet_projektuppgift.Controllers
 {
-    [Authorize]
+    
     public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;

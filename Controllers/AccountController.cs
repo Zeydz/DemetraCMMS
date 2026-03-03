@@ -108,7 +108,7 @@ public class AccountController : Controller
     {
        /* Remove cookie and redirect user to Home*/
         await _signInManager.SignOutAsync();
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Public");
     }
 
     /* REGISTER */
