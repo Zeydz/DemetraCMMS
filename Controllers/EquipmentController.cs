@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_projektuppgift.Controllers
 {
-    [Authorize]
+
     public class EquipmentController : Controller
     {
         /*Database context for accessing equipment and related data*/
@@ -19,6 +19,7 @@ namespace dotnet_projektuppgift.Controllers
         }
 
 
+        [Authorize(Roles = "Admin, Manager, Technician")]
         // GET: Equipment/Index
         public async Task<IActionResult> Index()
         {
@@ -30,7 +31,7 @@ namespace dotnet_projektuppgift.Controllers
             return View(equipment);
         }
 
-
+        [Authorize(Roles = "Admin, Manager, Technician")]
         // GET: Equipment/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -61,7 +62,7 @@ namespace dotnet_projektuppgift.Controllers
             
             return View();
         } 
-        
+        [Authorize(Roles = "Admin, Manager")]
         // POST: Equipment/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -85,7 +86,7 @@ namespace dotnet_projektuppgift.Controllers
             ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name", equipment.LocationId);
             return View(equipment);
         }
-        
+        [Authorize(Roles = "Admin, Manager")]
         // GET: Equipment/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -106,7 +107,7 @@ namespace dotnet_projektuppgift.Controllers
             
             return View(equipment);
         }
-        
+        [Authorize(Roles = "Admin, Manager")]
         // POST: Equipment/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -147,6 +148,7 @@ namespace dotnet_projektuppgift.Controllers
             return View(equipment);
         }
         
+        [Authorize(Roles = "Admin, Manager")]
         // POST: Equipment/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]

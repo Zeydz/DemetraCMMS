@@ -1,4 +1,5 @@
-﻿@{
+﻿@using dotnet_projektuppgift.Models.Entities
+@{
     ViewData["Title"] = "Home";
     Layout = "~/Views/Shared/_LayoutPublic.cshtml";
 }
@@ -117,6 +118,18 @@
 @* Main content *@
 <section class="bg-white py-20">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        @* Error handling*@
+        @if (TempData["Error"] != null)
+        {
+            <div class="mb-8 bg-red-50 border-2 border-red-200 p-4">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p class="text-sm font-semibold text-red-800">@TempData["Error"]</p>
+                </div>
+            </div>
+        }
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-16">
 
             @* Left side - FORM*@
@@ -171,12 +184,13 @@
                         <select name="EquipmentId" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium focus:bg-white transition">
                             <option value="">— Select equipment —</option>
-                            <option value="1">Fire Alarm System — Building A, Floor 2</option>
-                            <option value="2">HVAC Unit #1 — Building A, Floor 1</option>
-                            <option value="3">HVAC Unit #2 — Building B, Floor 1</option>
-                            <option value="4">Elevator — Building B</option>
-                            <option value="5">Network Router — Basement</option>
-                            <option value="6">Water Heater — Basement</option>
+                            @if (ViewData["Equipment"] != null)
+                            {
+                                @foreach (var eq in ViewData["Equipment"] as List<Equipment>)
+                                {
+                                    <option value="@eq.Id">@eq.Name — @eq.Location?.Name</option>
+                                }
+                            }
                         </select>
                     </div>
 
@@ -249,7 +263,7 @@
                     @* Submit button *@
                     <div class="pt-2">
                         <button type="submit"
-                                class="w-full bg-[#041f41] text-[#02f1b4] py-4 mono font-black text-sm tracking-widest uppercase
+                                class="cursor-pointer w-full bg-[#041f41] text-[#02f1b4] py-4 mono font-black text-sm tracking-widest uppercase
                                        hover:bg-[#02f1b4] hover:text-[#041f41] transition border-2 border-[#041f41]">
                             Submit Service Request →
                         </button>

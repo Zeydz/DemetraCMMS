@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_projektuppgift.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, Manager")]
     public class TechniciansController : Controller
     {
         /*Database context for accessing technician and related data*/

@@ -1,0 +1,127 @@
+@model dotnet_projektuppgift.ViewModels.CreateTicketViewModel
+
+@{
+    ViewData["Title"] = "Create Ticket";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="max-w-2xl">
+
+    @* Breadcru,b*@
+    <div class="mb-6">
+        <a asp-action="Index" class="mono text-xs tracking-widest uppercase text-gray-400 hover:text-[#041f41] transition">
+            ← Back to Tickets
+        </a>
+    </div>
+
+     @* Page header*@
+    <div class="mb-8">
+        <div class="flex items-center gap-3 mb-3">
+            <span class="w-1.5 h-1.5 bg-[#02f1b4] inline-block"></span>
+            <span class="mono text-[10px] tracking-[0.25em] text-[#02f1b4] uppercase font-bold">
+                New Ticket
+            </span>
+        </div>
+        <h2 class="text-2xl font-black text-[#041f41]">Create Maintenance Ticket</h2>
+        <p class="text-sm text-gray-500 mt-2">Report a new maintenance issue.</p>
+    </div>
+
+    @* Content*@
+    <div class="bg-white border-2 border-gray-200 p-8">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="mb-6 bg-red-50 border-2 border-red-200 p-4 text-sm text-red-800"></div>
+
+            @* Title *@
+            <div class="mb-6">
+                <label asp-for="Title" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Title *
+                </label>
+                <input asp-for="Title" 
+                       class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                              focus:outline-none focus:border-[#02f1b4] focus:bg-white transition"
+                       placeholder="e.g., HVAC not cooling properly" />
+                <span asp-validation-for="Title" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            @* Description*@
+            <div class="mb-6">
+                <label asp-for="Description" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Description *
+                </label>
+                <textarea asp-for="Description" rows="5"
+                          class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                                 focus:outline-none focus:border-[#02f1b4] focus:bg-white transition"
+                          placeholder="Describe the issue in detail..."></textarea>
+                <span asp-validation-for="Description" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            @* Equipment*@
+            <div class="mb-6">
+                <label asp-for="EquipmentId" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Equipment *
+                </label>
+                <select asp-for="EquipmentId" asp-items="@(ViewData["EquipmentId"] as SelectList)"
+                        class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                               focus:outline-none focus:border-[#02f1b4] focus:bg-white transition">
+                    <option value="">Select equipment...</option>
+                </select>
+                <span asp-validation-for="EquipmentId" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            @* Priority*@
+            <div class="mb-6">
+                <label asp-for="Priority" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Priority *
+                </label>
+                <select asp-for="Priority" 
+                        class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                               focus:outline-none focus:border-[#02f1b4] focus:bg-white transition">
+                    <option value="0">Low - Can wait a week</option>
+                    <option value="1" selected>Medium - Within 3 days</option>
+                    <option value="2">High - Within 24 hours</option>
+                    <option value="3">Critical - Immediate (4 hours)</option>
+                </select>
+                <span asp-validation-for="Priority" class="text-xs text-red-600 mt-1 block"></span>
+                <p class="text-xs text-gray-500 mt-2">
+                    Priority determines the due date automatically.
+                </p>
+            </div>
+
+            @* Assign to*@
+            <div class="mb-6">
+                <label asp-for="AssignedToId" class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                    Assign To <span class="text-gray-400 font-normal">(Optional)</span>
+                </label>
+                <select asp-for="AssignedToId" asp-items="@(ViewData["TechnicianId"] as SelectList)"
+                        class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                               focus:outline-none focus:border-[#02f1b4] focus:bg-white transition">
+                    <option value="">Unassigned (will be assigned later)</option>
+                </select>
+                <span asp-validation-for="AssignedToId" class="text-xs text-red-600 mt-1 block"></span>
+            </div>
+
+            @* Action buttons *@
+            <div class="flex items-center gap-3 pt-4 border-t-2 border-gray-100">
+                <button type="submit"
+                        class="cursor-pointer mono tracking-[0.15em] flex items-center gap-2 px-6 py-3 
+                               bg-[#041f41] text-[#02f1b4] text-xs font-black uppercase
+                               border-2 border-[#041f41] hover:bg-[#02f1b4] hover:text-[#041f41] transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Create Ticket
+                </button>
+                <a asp-action="Index"
+                   class="mono tracking-[0.15em] px-6 py-3 text-xs font-bold uppercase
+                          border-2 border-gray-300 text-gray-600
+                          hover:border-[#041f41] hover:text-[#041f41] transition">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

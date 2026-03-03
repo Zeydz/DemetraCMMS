@@ -1,0 +1,342 @@
+@using dotnet_projektuppgift.Models.Enums
+@model dotnet_projektuppgift.Models.Entities.Ticket
+
+@{
+    ViewData["Title"] = "Check Ticket Status";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+<style>
+    body {
+        font-family: 'Exo 2', sans-serif;
+    }
+
+    .mono {
+        font-family: 'Saira', sans-serif;
+    }
+
+    .dot {
+        width: 6px;
+        height: 6px;
+        background: #02f1b4;
+        display: inline-block;
+        flex-shrink: 0;
+    }
+</style>
+
+<section class="bg-white min-h-screen py-20">
+    <div class="max-w-3xl mx-auto px-6 lg:px-8">
+
+        @* Breadcrumb *@
+        <div class="mb-6">
+            <a asp-controller="Public" asp-action="Index" class="mono text-xs tracking-widest uppercase text-gray-400 hover:text-[#041f41] transition">
+                ← Back to Home
+            </a>
+        </div>
+        @* Check Ticket Status page*@
+        <div class="mb-8">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="dot"></span>
+                <span class="mono text-xs tracking-[0.25em] text-[#02f1b4] uppercase">
+                    Track Request
+                </span>
+            </div>
+            <h1 class="text-4xl font-black text-[#041f41] mb-4">
+                Check Ticket Status
+            </h1>
+            <p class="text-gray-600">
+                Enter your ticket number to track the status of your service request.
+            </p>
+        </div>
+
+        @* Error message *@
+        @if (TempData["Error"] != null)
+        {
+            <div class="mb-6 bg-red-50 border-2 border-red-200 p-4">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p class="text-sm font-semibold text-red-800">@TempData["Error"]</p>
+                </div>
+            </div>
+        }
+
+        @* Search form *@
+        @if (Model == null)
+        {
+            <div class="bg-white border-2 border-gray-200 p-8 mb-8">
+                <form method="get" asp-action="CheckStatus" class="space-y-6">
+                    <div>
+                        @* Ticket number *@
+                        <label class="mono block text-xs font-bold text-[#041f41] tracking-widest uppercase mb-2">
+                            Ticket Number <span class="text-[#02f1b4]">*</span>
+                        </label>
+                        <input type="number"
+                               name="ticketId"
+                               required
+                               class="w-full px-4 py-3 border-2 border-gray-200 bg-gray-50 text-[#041f41] font-medium
+                                      focus:outline-none focus:border-[#02f1b4] focus:bg-white transition"
+                               placeholder="e.g., 123"/>
+                        <p class="text-xs text-gray-500 mt-2">
+                            Your ticket number was provided when you submitted your request.
+                        </p>
+                    </div>
+
+                    @* Submit button *@
+                    <button type="submit"
+                            class="cursor-pointer w-full bg-[#041f41] text-[#02f1b4] py-3 mono font-black text-xs tracking-widest uppercase
+                                   hover:bg-[#02f1b4] hover:text-[#041f41] transition border-2 border-[#041f41]">
+                        Check Status →
+                    </button>
+                </form>
+            </div>
+
+            @* Help text *@
+            <div class="bg-gray-50 border-2 border-gray-200 p-6">
+                <h3 class="font-bold text-[#041f41] mb-3 text-sm">Don't have your ticket number?</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">
+                    Your ticket number was provided when you submitted your request. 
+                    Please contact an administrator if you are unable to locate your ticket number.
+                </p>
+            </div>
+        }
+
+        @* Ticket details (when found) *@
+        @if (Model != null)
+        {
+            @* Status overview *@
+            <div class="bg-[#041f41] text-white p-8 mb-6">
+                <div class="text-center mb-6">
+                    <div class="mono text-xs tracking-[0.25em] text-[#02f1b4] uppercase mb-2">
+                        Ticket Number
+                    </div>
+                    <div class="text-5xl font-black text-[#02f1b4]">
+                        #@Model.Id
+                    </div>
+                </div>
+
+                @* Ticket status*@
+                <div class="border-t border-white/10 pt-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="mono text-xs tracking-widest uppercase text-gray-400">Current Status</div>
+                        @{
+                            var statusClass = Model.Status switch
+                            {
+                                TicketStatus.New => "bg-gray-500",
+                                TicketStatus.Assigned => "bg-blue-500",
+                                TicketStatus.InProgress => "bg-purple-500",
+                                TicketStatus.Resolved => "bg-green-500",
+                                _ => "bg-gray-400"
+                            };
+                        }
+                        <span class="mono inline-block px-3 py-1 text-xs font-bold tracking-widest uppercase @statusClass text-white">
+                            @Model.Status
+                        </span>
+                    </div>
+
+                    @* Priority *@
+                    <div class="flex justify-between items-center">
+                        <div class="mono text-xs tracking-widest uppercase text-gray-400">Priority</div>
+                        @{
+                            var priorityClass = Model.Priority switch
+                            {
+                                TicketPriority.Critical => "bg-red-500",
+                                TicketPriority.High => "bg-orange-500",
+                                TicketPriority.Medium => "bg-yellow-500",
+                                _ => "bg-blue-500"
+                            };
+                        }
+                        <span class="mono inline-block px-3 py-1 text-xs font-bold tracking-widest uppercase @priorityClass text-white">
+                            @Model.Priority
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            @* Ticket information *@
+            <div class="bg-white border-2 border-gray-200 p-8 mb-6">
+                <h3 class="mono text-xs tracking-widest uppercase text-gray-400 font-bold mb-4">Request Details</h3>
+
+                @* Issue *@
+                <div class="space-y-4">
+                    <div>
+                        <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-1">
+                            Issue
+                        </div>
+                        <div class="font-bold text-[#041f41]">@Model.Title</div>
+                    </div>
+                    
+                    @* Description*@
+                    <div>
+                        <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-1">
+                            Description
+                        </div>
+                        <div class="text-sm text-gray-700 whitespace-pre-wrap">@Model.Description</div>
+                    </div>
+
+                    @* Equipment *@
+                    <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+                        <div>
+                            <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-1">
+                                Equipment
+                            </div>
+                            <div class="text-sm text-gray-700">@Model.Equipment?.Name</div>
+                            <div class="text-xs text-gray-500">@Model.Equipment?.Location?.Name</div>
+                        </div>
+
+                        @* Submitted *@
+                        <div>
+                            <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-1">
+                                Submitted
+                            </div>
+                            <div class="text-sm text-gray-700 mono">@Model.CreatedDate.ToString("MMM dd, yyyy")</div>
+                        </div>
+                    </div>
+
+                    @* Show assigned technician*@
+                    @if (Model.AssignedTo != null)
+                    {
+                        <div class="pt-4 border-t border-gray-200">
+                            <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-1">
+                                Assigned Technician
+                            </div>
+                            <div class="text-sm text-gray-700">@Model.AssignedTo.User?.FullName</div>
+                        </div>
+                    }
+
+                    @* Expected Due Date *@
+                    <div class="pt-4 border-t border-gray-200">
+                        <div class="mono text-[10px] tracking-widest uppercase text-gray-400 font-bold mb-1">
+                            Expected Due Date
+                        </div>
+                        <div class="text-sm text-gray-700 mono">@Model.DueDate.ToString("MMM dd, yyyy HH:mm")</div>
+                    </div>
+                </div>
+            </div>
+
+            @* Status timeline *@
+            <div class="bg-white border-2 border-gray-200 p-8 mb-6">
+                <h3 class="mono text-xs tracking-widest uppercase text-gray-400 font-bold mb-6">Status Timeline</h3>
+
+                <div class="space-y-4">
+                    @* Request recieved *@
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 shrink-0 rounded-full bg-blue-500 flex items-center justify-center">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-bold text-sm text-[#041f41]">Request Received</div>
+                            <div class="text-xs text-gray-500 mono">@Model.CreatedDate.ToString("MMM dd, yyyy HH:mm")</div>
+                        </div>
+                    </div>
+
+                    @* Assigned *@
+                    @if (Model.Status >= TicketStatus.Assigned)
+                    {
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 shrink-0 rounded-full bg-yellow-500 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-bold text-sm text-[#041f41]">Technician Assigned</div>
+                                <div class="text-xs text-gray-500">@Model.AssignedTo?.User?.FullName</div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 shrink-0 rounded-full bg-gray-200 flex items-center justify-center">
+                                <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-bold text-sm text-gray-400">Awaiting Assignment</div>
+                                <div class="text-xs text-gray-400">Pending technician allocation</div>
+                            </div>
+                        </div>
+                    }
+
+                    @* In Progress *@
+                    @if (Model.Status >= TicketStatus.InProgress)
+                    {
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 shrink-0 rounded-full bg-purple-500 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-bold text-sm text-[#041f41]">Work in Progress</div>
+                                <div class="text-xs text-gray-500">Technician is actively working on your request</div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 shrink-0 rounded-full bg-gray-200 flex items-center justify-center">
+                                <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-bold text-sm text-gray-400">Pending Work</div>
+                                <div class="text-xs text-gray-400">Work not yet started</div>
+                            </div>
+                        </div>
+                    }
+
+                    @* Completed *@
+                    @* If ticketValue is is either Resolved (3) or Closed (4), show*@
+                    @if (Model.Status >= TicketStatus.Resolved)
+                    {
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 shrink-0 rounded-full bg-green-500 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-bold text-sm text-[#041f41]">Work Completed</div>
+                                <div class="text-xs text-gray-500 mono">Work has been completed</div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 shrink-0 rounded-full bg-gray-200 flex items-center justify-center">
+                                <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-bold text-sm text-gray-400">Awaiting Completion</div>
+                                <div class="text-xs text-gray-400">Work not yet completed</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @* Action buttons *@
+            <div class="flex flex-col sm:flex-row gap-4">
+                <a asp-controller="Public" asp-action="CheckStatus"
+                   class="flex-1 text-center border-2 border-[#041f41] text-[#041f41] py-3
+                          mono font-black text-xs tracking-widest uppercase
+                          hover:bg-[#041f41] hover:text-[#02f1b4] transition">
+                    ← Check Another Ticket
+                </a>
+
+                <a asp-controller="Public" asp-action="Index"
+                   class="flex-1 text-center bg-[#041f41] text-[#02f1b4] py-3
+                          mono font-black text-xs tracking-widest uppercase
+                          hover:bg-[#02f1b4] hover:text-[#041f41] transition border-2 border-[#041f41]">
+                    Back to Home
+                </a>
+            </div>
+        }
+
+    </div>
+</section>
