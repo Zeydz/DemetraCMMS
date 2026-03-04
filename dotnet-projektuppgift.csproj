@@ -5,8 +5,11 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>dotnet_projektuppgift</RootNamespace>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
-
+    <PropertyGroup>
+        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
@@ -23,11 +26,59 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="coverlet.collector" Version="6.0.4"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1"/>
+        <PackageReference Include="xunit" Version="2.9.3"/>
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
       <_ContentIncludedByDefault Remove="Views\Technicians\Create.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Technicians\Delete.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Technicians\Details.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Technicians\Edit.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Technicians\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="dotnet-projektuppgift.Tests\obj\dotnet-projektuppgift.Tests.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="dotnet-projektuppgift.Tests\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="dotnet-projektuppgift.Tests\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1.deps.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1.runtimeconfig.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\obj\Debug\net10.0\TestProject1.sourcelink.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\obj\TestProject1.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\appsettings.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\dotnet-projektuppgift.deps.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\dotnet-projektuppgift.runtimeconfig.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\dotnet-projektuppgift.staticwebassets.endpoints.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\dotnet-projektuppgift.staticwebassets.runtime.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\package-lock.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\package.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\appsettings.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\dotnet-projektuppgift.deps.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\dotnet-projektuppgift.runtimeconfig.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\dotnet-projektuppgift.staticwebassets.endpoints.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\dotnet-projektuppgift.staticwebassets.runtime.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\package-lock.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\package.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\TestProject1.deps.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\TestProject1.runtimeconfig.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\TestProject1.runtimeconfig.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\TestProject1\obj\Debug\net10.0\TestProject1.sourcelink.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\TestProject1\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\TestProject1\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\bin\Debug\net10.0\TestProject1\obj\TestProject1.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\obj\Debug\net10.0\TestProject1.sourcelink.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net10.0\TestProject1\obj\TestProject1.csproj.nuget.dgspec.json" />
     </ItemGroup>
     
 <!--
