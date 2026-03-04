@@ -10,21 +10,22 @@ builder.Services.AddControllersWithViews();
 /* Database configuration */
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Configuration
+            .GetConnectionString("DefaultConnection")));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-{
-    /* Development*/
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 3;
-    
-    options.User.RequireUniqueEmail = true;
-})
-.AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
+    {
+        /* Development*/
+        options.Password.RequireDigit = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequiredLength = 3;
+
+        options.User.RequireUniqueEmail = true;
+    })
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -38,21 +39,21 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-/*
- SEED DATABASE
- using (var scope = app.Services.CreateScope())
+
+/* Seed database on launch */
+await using var scope = app.Services.CreateAsyncScope();
+try
 {
-    var services = scope.ServiceProvider;
-    try
-    {
-        await DbSeeder.SeedAsync(services);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while seeding the database.");
-    }
-}*/
+    await DbSeeder.SeedAsync(scope.ServiceProvider);
+}
+catch (Exception ex)
+{
+    /* Using ILogger to print out any errors during seeding*/
+    scope.ServiceProvider
+        .GetRequiredService<ILogger<Program>>()
+        .LogError(ex,
+            "An error occurred while seeding the database.");
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
