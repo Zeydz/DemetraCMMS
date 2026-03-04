@@ -47,6 +47,10 @@ namespace dotnet_projektuppgift.Controllers
                 .Include(t => t.User)
                 .Include(t => t.TechnicianSkills)
                 .ThenInclude(ts => ts.Skill)
+                .Include(t => t.AssignedTickets)
+                .ThenInclude(ticket => ticket.Equipment)
+                .ThenInclude(e => e.Location)
+                
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (technician == null)

@@ -42,7 +42,10 @@ namespace dotnet_projektuppgift.Controllers
 
             /*Check database for the equipment with related Location*/
             var equipment = await _context.Equipment
-                .Include(e => e.Location) 
+                .Include(e => e.Location)
+                .Include(e => e.Tickets)
+                .ThenInclude(t => t.AssignedTo)
+                .ThenInclude(t => t.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             
             if (equipment == null)
