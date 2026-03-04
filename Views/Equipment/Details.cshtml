@@ -152,22 +152,126 @@
             <p>Maintenance schedules will appear here</p>
         </div>
     </div>
-
-    @* Service tickets *@
+    
+   @* Service tickets *@
     <div class="mt-6 bg-white border-2 border-gray-200">
         <div class="px-4 sm:px-6 py-4 border-b-2 border-gray-200 bg-gray-50">
-            <div class="flex items-center gap-3">
-                <svg class="w-5 h-5 text-[#02f1b4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
-                </svg>
-                <span class="mono text-xs tracking-widest uppercase text-gray-600 font-bold">
-                    Service Tickets
-                </span>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-[#02f1b4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                    </svg>
+                    <span class="mono text-xs tracking-widest uppercase text-gray-600 font-bold">
+                        Service Tickets (@Model.Tickets.Count)
+                    </span>
+                </div>
+                @* Add ticket button *@
+                <a asp-controller="Tickets" asp-action="Create" asp-route-id="@Model.Id"
+                   class="mono tracking-[0.1em] inline-flex items-center gap-2 px-4 py-2 text-[10px] font-bold uppercase
+                      border-2 border-[#02f1b4] text-[#02f1b4]
+                      hover:bg-[#02f1b4] hover:text-[#041f41] transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    Add ticket
+                </a>
             </div>
         </div>
-        <div class="px-4 sm:px-6 py-8 text-center text-gray-400 text-sm">
-            <p>Service tickets for this equipment will appear here</p>
-        </div>
+
+        @* If there are any tickets, show this*@
+        @if (Model.Tickets != null && Model.Tickets.Any())
+        {
+            <div class="divide-y divide-gray-100">
+                @foreach (var ticket in Model.Tickets.OrderByDescending(t => t.CreatedDate))
+                {
+                    var ticketStatusClass = ticket.Status switch
+                    {
+                        TicketStatus.New => "bg-gray-50 text-gray-700 border-gray-200",
+                        TicketStatus.Assigned => "bg-blue-50 text-blue-700 border-blue-200",
+                        TicketStatus.InProgress => "bg-purple-50 text-purple-700 border-purple-200",
+                        TicketStatus.Resolved => "bg-green-50 text-green-700 border-green-200",
+                        _ => "bg-gray-50 text-gray-700 border-gray-200"
+                    };
+
+                    var priorityClass = ticket.Priority switch
+                    {
+                        TicketPriority.Critical => "bg-red-50 text-red-700 border-red-200",
+                        TicketPriority.High => "bg-orange-50 text-orange-700 border-orange-200",
+                        TicketPriority.Medium => "bg-yellow-50 text-yellow-700 border-yellow-200",
+                        _ => "bg-blue-50 text-blue-700 border-blue-200"
+                    };
+
+                    <div class="px-4 sm:px-6 py-4 hover:bg-gray-50 transition">
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-2">
+                                    @* Priority*@
+                                    <span class="mono text-xs text-gray-400">#@ticket.Id</span>
+                                    <span class="mono inline-block px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase border @priorityClass">
+                                        @ticket.Priority
+                                    </span>
+                                    @* Status *@
+                                    <span class="mono inline-block px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase border @ticketStatusClass">
+                                        @ticket.Status
+                                    </span>
+                                </div>
+                                @* Title*@
+                                <h4 class="font-semibold text-sm text-[#041f41] mb-1 truncate">
+                                    @ticket.Title
+                                </h4>
+                                <div class="flex flex-wrap items-center gap-3 text-xs text-gray-500">
+                                    <div class="flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                        @* Created at *@
+                                        <span class="mono">@ticket.CreatedDate.ToString("MMM dd, HH:mm")</span>
+                                    </div>
+                                    @* Show assigned Technician*@
+                                    @if (ticket.AssignedTo != null)
+                                    {
+                                        <div class="flex items-center gap-1">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                            </svg>
+                                            <span>@ticket.AssignedTo.User?.FullName</span>
+                                        </div>
+                                    }
+                                    @* Due date, show if its overdue*@
+                                    @if (ticket.DueDate < DateTime.UtcNow && ticket.Status != TicketStatus.Resolved && ticket.Status != TicketStatus.Closed)
+                                    {
+                                        <div class="flex items-center gap-1 text-red-600 font-semibold">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            <span>Overdue</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <a asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id"
+                               class="mono tracking-[0.1em] px-3 py-1.5 text-[10px] font-bold uppercase border border-gray-300 text-gray-600 hover:border-[#041f41] hover:text-[#041f41] transition shrink-0">
+                                View
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="px-4 sm:px-6 py-8 text-center">
+                <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                </svg>
+                <p class="text-gray-400 text-sm mb-3">No service tickets yet</p>
+                <a asp-controller="Tickets" asp-action="Create" asp-route-equipmentId="@Model.Id"
+                   class="mono text-xs tracking-widest uppercase text-[#02f1b4] hover:text-[#041f41] font-bold transition">
+                    + Create First Ticket
+                </a>
+            </div>
+        }
     </div>
 
     @* ACtion buttons*@
