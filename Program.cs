@@ -1,5 +1,6 @@
 using dotnet_projektuppgift.Data;
 using dotnet_projektuppgift.Models;
+using dotnet_projektuppgift;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

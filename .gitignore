@@ -4,7 +4,6 @@ riderModule.iml
 /_ReSharper.Caches/
 /node_modules
 .env
-Dbseeder.cs
 
 # Build results
 bin/

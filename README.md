@@ -61,7 +61,7 @@ Detta projekt är ett underhålls och servicesystem utvecklat med ASP.NET Core M
 
 ---
 
-## Teknisk Stack
+## Teknisk information
 
 ### Backend
 - **Framework:** ASP.NET Core 10.0 MVC
@@ -80,9 +80,9 @@ Detta projekt är ett underhålls och servicesystem utvecklat med ASP.NET Core M
 
 ---
 
-## 🚀 Installation
+## Installation
 
-### 1. Klona Repot
+### 1. Klona repot
 
 ```bash
 git clone https://github.com/Zeydz/DemetraCMMS.git
@@ -94,7 +94,7 @@ git clone https://github.com/Zeydz/DemetraCMMS.git
 dotnet restore
 ```
 
-### 3. Konfigurera Databasen
+### 3. Konfigurera databasen
 
 Projektet använder SQLite som databas för utveckling. Konfigurationen finns i `appsettings.json`:
 
@@ -106,7 +106,7 @@ Projektet använder SQLite som databas för utveckling. Konfigurationen finns i 
 }
 ```
 
-### 4. Skapa och Seeda Databasen
+### 4. Skapa och seeda databasen
 
 Databasen skapas automatiskt vid första körningen, men du kan också köra migreringar manuellt:
 
@@ -125,13 +125,13 @@ Seed-data läggs till automatiskt vid första körningen och innehåller:
 - **Användare**
 - **Ärenden**
 
-### 5. Kör Applikationen
+### 5. Kör applikationen
 
 ```bash
 dotnet run
 ```
 
-### 6. Logga In
+### 6. Logga in
 
 Använd admin-kontot för att komma åt alla funktioner:
 
