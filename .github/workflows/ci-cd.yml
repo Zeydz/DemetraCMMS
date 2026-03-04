@@ -81,29 +81,8 @@ jobs:
         run: dotnet format --verify-no-changes --verbosity diagnostic
         continue-on-error: true # Warning only, don't fail
       
-      # Security scan (optional)
+      # Security scan, check for vulnerable packages
       - name: Security scan
         run: |
           dotnet list package --vulnerable --include-transitive
         continue-on-error: true
-
-  # ═══════════════════════════════════════════════════════════════════════
-  # JOB 3: DEPLOYMENT (Optional - only on main branch)
-  # ═══════════════════════════════════════════════════════════════════════
-  # Uncomment this section when ready to deploy
-  # deploy:
-  #   name: Deploy to Production
-  #   runs-on: ubuntu-latest
-  #   needs: [build-and-test, code-quality]
-  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-  #   
-  #   steps:
-  #   - name: Download artifacts
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: published-app
-  #       path: ./publish
-  #       
-  #   # Add deployment steps here (Azure, AWS, etc.)
-  #   - name: Deploy to Azure Web App
-  #     run: echo "Deployment steps would go here"
