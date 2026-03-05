@@ -39,6 +39,7 @@ maintenance.db
 # Secrets 
 appsettings.Production.json
 appsettings.Development.json
+*.Development.json
 
 # Logs
 *.log
