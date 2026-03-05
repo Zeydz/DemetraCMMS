@@ -1,6 +1,7 @@
 using dotnet_projektuppgift.Data;
 using dotnet_projektuppgift.Models;
 using dotnet_projektuppgift;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,11 +29,24 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+/*Configure Google Authentication*/
+builder.Services
+    .AddAuthentication()
+    .AddGoogle(options =>
+    {
+        options.ClientId =
+            builder.Configuration["Authentication:Google:ClientId"]!;
+        options.ClientSecret =
+            builder.Configuration["Authentication:Google:ClientSecret"]!;
+
+        options.SaveTokens = true;
+    });
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
     options.LogoutPath = "/Account/Logout";
     options.AccessDeniedPath = "/Account/AccessDenied";
+    options.ExpireTimeSpan = TimeSpan.FromHours(2);
 });
 
 // Add services to the container.
