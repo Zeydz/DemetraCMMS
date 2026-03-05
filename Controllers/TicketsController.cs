@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -217,7 +218,16 @@ namespace dotnet_projektuppgift.Controllers
                 {
                     return NotFound();
                 }
+                
+                /*Validation: Cannot set status to New if technician is assigned*/
+                if (model.Status == TicketStatus.New && model.AssignedToId.HasValue)
+                {
+                    TempData["Error"] = "Cannot set status to New while a technician is assigned. Unassign the technician first.";
+            
+                    return RedirectToAction(nameof(Index));
+                }
 
+                /* Update ticket properties*/
                 ticket.Title = model.Title;
                 ticket.Description = model.Description;
                 ticket.Priority = model.Priority;
@@ -230,7 +240,7 @@ namespace dotnet_projektuppgift.Controllers
                 {
                     ticket.DueDate = CalculateDueDate(model.Priority);
                 }
-
+    
                 /*Auto-set status based on assignment*/
                 if (model.AssignedToId.HasValue && ticket.Status == TicketStatus.New)
                 {
@@ -244,24 +254,10 @@ namespace dotnet_projektuppgift.Controllers
                 /* Return back to Details tab, assign ticket.Id to id*/
                 return RedirectToAction(nameof(Details), new { id = ticket.Id });
             }
-
-            /*Reload dropdowns*/
-            var equipment = await _context.Equipment
-                .Include(e => e.Location)
-                .Select(e => new { e.Id, DisplayName = e.Name + " (" + e.Location.Name + ")" })
-                .ToListAsync();
-
-            var technicians = await _context.Technicians
-                .Include(t => t.User)
-                .Where(t => t.IsActive)
-                .Select(t => new { t.Id, DisplayName = t.User.FullName })
-                .ToListAsync();
-
-            ViewData["EquipmentId"] = new SelectList(equipment, "Id", "DisplayName", model.EquipmentId);
-            ViewData["TechnicianId"] = new SelectList(technicians, "Id", "DisplayName", model.AssignedToId);
-
+            
             return RedirectToAction(nameof(Index));
         }
+        
         [Authorize(Roles = "Admin, Manager")]
         // POST: Tickets/Delete/5
         [HttpPost]
