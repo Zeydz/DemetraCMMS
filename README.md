@@ -87,7 +87,27 @@ Detta projekt är ett underhålls och servicesystem utvecklat med ASP.NET Core M
 ```bash
 git clone https://github.com/Zeydz/DemetraCMMS.git
 ```
+### Google OAuth (Valfritt)
 
+**OBS:** Google OAuth är helt VALFRITT. Applikationen fungerar perfekt utan det!
+
+**Standard-inloggning:**
+- Email: `admin@maintenance.local`
+- Lösenord: `Admin123!`
+
+**Om du vill aktivera Google OAuth:**
+
+1. Kopiera template-filen:
+```bash
+   cp appsettings.Development.json.template appsettings.Development.json
+```
+
+2. Skaffa Google OAuth credentials från Google Cloud Console
+
+3. Lägg till dina credentials i `appsettings.Development.json`
+
+4. Starta om applikationen - Google-knappen visas nu på login-sidan
+```
 ### 2. Installera NuGet-paket
 
 ```bash
