@@ -29,18 +29,26 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-/*Configure Google Authentication*/
-builder.Services
-    .AddAuthentication()
-    .AddGoogle(options =>
-    {
-        options.ClientId =
-            builder.Configuration["Authentication:Google:ClientId"]!;
-        options.ClientSecret =
-            builder.Configuration["Authentication:Google:ClientSecret"]!;
+/*Configure Google Authentication - ONLY if credentials are provided*/
+var googleClientId = builder.Configuration["Authentication:Google:ClientId"];
+var googleClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 
-        options.SaveTokens = true;
-    });
+if (!string.IsNullOrEmpty(googleClientId) && !string.IsNullOrEmpty(googleClientSecret))
+{
+    builder.Services.AddAuthentication()
+        .AddGoogle(options =>
+        {
+            options.ClientId = googleClientId;
+            options.ClientSecret = googleClientSecret;
+            options.SaveTokens = true;
+        });
+    
+    Console.WriteLine("Google OAuth configured");
+}
+else
+{
+    Console.WriteLine("Google OAuth not configured - email/password only");
+}
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
